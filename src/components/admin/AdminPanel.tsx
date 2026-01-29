@@ -58,26 +58,27 @@ export function AdminPanel({ open, onOpenChange }: AdminPanelProps) {
   const renderFactorInput = (
     key: keyof CalculationFactors,
     label: string,
-    isPercentage: boolean = true
+    type: "percentage" | "multiplier" | "days" = "percentage"
   ) => (
     <div className="flex items-center justify-between gap-4 py-2">
       <Label className="text-sm">{label}</Label>
       <div className="flex items-center gap-2">
         <Input
           type="number"
-          step={isPercentage ? 0.01 : 1}
+          step={type === "percentage" ? 0.01 : 1}
           min={0}
-          max={isPercentage ? 1 : 100}
+          max={type === "percentage" ? 1 : 365}
           value={factors[key]}
           onChange={(e) => updateFactor(key, Number(e.target.value))}
           className="w-24 text-right"
         />
-        {isPercentage && (
+        {type === "percentage" && (
           <span className="text-sm text-muted-foreground w-12">
             ({(factors[key] * 100).toFixed(0)}%)
           </span>
         )}
-        {!isPercentage && <span className="text-sm text-muted-foreground w-12">x</span>}
+        {type === "multiplier" && <span className="text-sm text-muted-foreground w-12">x</span>}
+        {type === "days" && <span className="text-sm text-muted-foreground w-12">dias</span>}
       </div>
     </div>
   );
@@ -128,9 +129,14 @@ export function AdminPanel({ open, onOpenChange }: AdminPanelProps) {
                 <h4 className="font-medium text-sm text-muted-foreground mb-3">
                   Fatores de Incapacidade Temporária
                 </h4>
-                {renderFactorInput("itaInternamento100", "Internamento (≤30 dias)")}
-                {renderFactorInput("itaInternamentoApos30", "Internamento (>30 dias)")}
+                {renderFactorInput("itaInternamento100", "Internamento (≤limite)")}
+                {renderFactorInput("itaInternamentoApos30", "Internamento (>limite)")}
                 {renderFactorInput("itaAmbulatorio", "Ambulatório")}
+                <div className="border-t pt-3 mt-3">
+                  <h4 className="font-medium text-sm text-muted-foreground mb-3">Parâmetros</h4>
+                  {renderFactorInput("itaLimiteDiasInternamento", "Limite dias internamento", "days")}
+                  {renderFactorInput("itaDivisorRemuneracaoDiaria", "Divisor rem. diária (Ref÷X)", "days")}
+                </div>
               </TabsContent>
 
               <TabsContent value="ipp" className="space-y-2 mt-4">
@@ -153,8 +159,8 @@ export function AdminPanel({ open, onOpenChange }: AdminPanelProps) {
                 {renderFactorInput("pensaoPais", "Pais (cada)")}
                 <div className="border-t pt-3 mt-3">
                   <h4 className="font-medium text-sm text-muted-foreground mb-3">Subsídios</h4>
-                  {renderFactorInput("subsidioMorteMultiplicador", "Subsídio Morte", false)}
-                  {renderFactorInput("subsidioFuneralMultiplicador", "Subsídio Funeral", false)}
+                  {renderFactorInput("subsidioMorteMultiplicador", "Subsídio Morte", "multiplier")}
+                  {renderFactorInput("subsidioFuneralMultiplicador", "Subsídio Funeral", "multiplier")}
                 </div>
               </TabsContent>
             </Tabs>

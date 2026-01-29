@@ -11,6 +11,7 @@ import { HelpCircle, Calculator, RotateCcw, FileDown, AlertCircle } from "lucide
 import { SalarioReferencia, calcularReferenciaAnual } from "./SalarioReferencia";
 import { formatCurrency } from "@/lib/formatters";
 import { exportITAPDF } from "@/lib/pdfExport";
+import { useAdmin } from "@/contexts/AdminContext";
 
 interface ResultadosITA {
   referenciaAnual: number;
@@ -34,6 +35,8 @@ function calcularDias(dataInicio: string, dataFim: string): number {
 }
 
 export function ITACalculator() {
+  const { factors } = useAdmin();
+
   // Salário de referência
   const [salarioBaseMensal, setSalarioBaseMensal] = useState(0);
   const [subsidioFixoMensal, setSubsidioFixoMensal] = useState(0);
@@ -55,21 +58,25 @@ export function ITACalculator() {
 
   const resultados = useMemo((): ResultadosITA => {
     const ref = calcularReferenciaAnual(salarioBaseMensal, subsidioFixoMensal, numSalariosAno);
-    const remuneracaoDiaria = ref / 30;
+    const limiteDias = factors.itaLimiteDiasInternamento;
+    const divisorDiaria = factors.itaDivisorRemuneracaoDiaria;
+    const remuneracaoDiaria = ref / divisorDiaria;
 
     const diasIntern = diasInternamento > 0 ? diasInternamento : 0;
     const diasAmbul = diasAmbulatorio > 0 ? diasAmbulatorio : 0;
 
-    // Indemnização Internamento
+    // Indemnização Internamento (usa fatores do admin)
     let indemnInternamento = 0;
-    if (diasIntern <= 30) {
-      indemnInternamento = remuneracaoDiaria * diasIntern;
+    if (diasIntern <= limiteDias) {
+      indemnInternamento = remuneracaoDiaria * diasIntern * factors.itaInternamento100;
     } else {
-      indemnInternamento = (remuneracaoDiaria * 30) + (remuneracaoDiaria * (diasIntern - 30) * 0.75);
+      indemnInternamento = 
+        (remuneracaoDiaria * limiteDias * factors.itaInternamento100) + 
+        (remuneracaoDiaria * (diasIntern - limiteDias) * factors.itaInternamentoApos30);
     }
 
-    // Indemnização Ambulatório (65%)
-    const indemnAmbulatorio = remuneracaoDiaria * diasAmbul * 0.65;
+    // Indemnização Ambulatório (usa fator do admin)
+    const indemnAmbulatorio = remuneracaoDiaria * diasAmbul * factors.itaAmbulatorio;
 
     return {
       referenciaAnual: ref,
@@ -81,7 +88,7 @@ export function ITACalculator() {
       totalDias: diasIntern + diasAmbul,
       totalIndemnizacao: indemnInternamento + indemnAmbulatorio,
     };
-  }, [salarioBaseMensal, subsidioFixoMensal, numSalariosAno, diasInternamento, diasAmbulatorio]);
+  }, [salarioBaseMensal, subsidioFixoMensal, numSalariosAno, diasInternamento, diasAmbulatorio, factors]);
 
   const handleLimpar = () => {
     setSalarioBaseMensal(0);
