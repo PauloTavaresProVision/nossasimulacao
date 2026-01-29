@@ -11,42 +11,57 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-primary shadow-lg">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="bg-white rounded-lg p-3 shadow-md">
-                <img
-                  src={logoNossa}
-                  alt="Nossa Seguros"
-                  className="h-10 md:h-14 w-auto"
-                />
-              </div>
+      {/* Header + Hero Combined */}
+      <header className="bg-gradient-to-br from-primary via-primary to-nossa-blue-light shadow-lg">
+        {/* Top bar with logo */}
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-center md:justify-between">
+            <div className="bg-white rounded-xl p-3 shadow-lg">
+              <img
+                src={logoNossa}
+                alt="Nossa Seguros"
+                className="h-10 md:h-12 w-auto"
+              />
             </div>
-            <div className="hidden md:block text-right">
-              <p className="text-primary-foreground/80 text-sm">
-                Simulador de Cálculo
-              </p>
-              <p className="text-primary-foreground font-semibold">
-                Compensações AT
-              </p>
+            <div className="hidden md:flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
+              <div className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+              <span className="text-primary-foreground/90 text-sm font-medium">
+                Simulador de Compensações AT
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Hero content */}
+        <div className="container mx-auto px-4 py-8 md:py-12 text-center">
+          <div className="max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 bg-secondary/20 text-secondary-foreground px-4 py-1.5 rounded-full text-sm font-medium mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+              Ferramenta de Simulação
+            </div>
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-3">
+              Simulador de Cálculo de Compensações
+            </h1>
+            <p className="text-primary-foreground/80 text-lg md:text-xl">
+              Acidentes de Trabalho
+            </p>
+            <div className="flex items-center justify-center gap-8 mt-6 text-primary-foreground/60 text-sm">
+              <div className="flex items-center gap-2">
+                <Heart className="h-4 w-4" />
+                <span>Pensão por Morte</span>
+              </div>
+              <div className="hidden md:flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                <span>Incapacidade Temporária</span>
+              </div>
+              <div className="hidden md:flex items-center gap-2">
+                <Percent className="h-4 w-4" />
+                <span>Pensão por IPP</span>
+              </div>
             </div>
           </div>
         </div>
       </header>
-
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary via-primary to-nossa-blue-light py-8 md:py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-2xl md:text-4xl font-bold text-primary-foreground mb-2">
-            Simulador de Cálculo de Compensações
-          </h1>
-          <p className="text-primary-foreground/80 text-lg md:text-xl">
-            Acidentes de Trabalho
-          </p>
-        </div>
-      </section>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
