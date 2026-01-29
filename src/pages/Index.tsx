@@ -13,14 +13,16 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-primary shadow-lg">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <img
-                src={logoNossa}
-                alt="Nossa Seguros"
-                className="h-12 md:h-16 w-auto"
-              />
+              <div className="bg-white rounded-lg p-3 shadow-md">
+                <img
+                  src={logoNossa}
+                  alt="Nossa Seguros"
+                  className="h-10 md:h-14 w-auto"
+                />
+              </div>
             </div>
             <div className="hidden md:block text-right">
               <p className="text-primary-foreground/80 text-sm">
