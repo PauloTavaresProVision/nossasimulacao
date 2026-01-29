@@ -207,8 +207,14 @@ export function PensaoMorte() {
             <Input
               type="number"
               min={0}
-              value={numFilhos}
-              onChange={(e) => setNumFilhos(Math.max(0, parseInt(e.target.value) || 0))}
+              value={numFilhos || ""}
+              onChange={(e) => {
+                const val = e.target.value;
+                setNumFilhos(val === "" ? 0 : Math.max(0, parseInt(val, 10) || 0));
+              }}
+              onBlur={(e) => {
+                if (e.target.value === "") setNumFilhos(0);
+              }}
               className="input-styled max-w-[120px]"
             />
           </div>
