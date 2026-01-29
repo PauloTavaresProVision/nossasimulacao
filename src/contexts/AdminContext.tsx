@@ -2,9 +2,11 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 
 interface CalculationFactors {
   // ITA
-  itaInternamento100: number; // primeiros 30 dias (100%)
-  itaInternamentoApos30: number; // após 30 dias (75%)
+  itaInternamento100: number; // primeiros X dias (100%)
+  itaInternamentoApos30: number; // após X dias (75%)
   itaAmbulatorio: number; // 65%
+  itaLimiteDiasInternamento: number; // limite de dias para 100% (padrão 30)
+  itaDivisorRemuneracaoDiaria: number; // divisor para calcular diária (padrão 30)
   
   // IPP
   ippDecretoDefault: number; // 70%
@@ -27,6 +29,8 @@ const defaultFactors: CalculationFactors = {
   itaInternamento100: 1.0,
   itaInternamentoApos30: 0.75,
   itaAmbulatorio: 0.65,
+  itaLimiteDiasInternamento: 30,
+  itaDivisorRemuneracaoDiaria: 30,
   ippDecretoDefault: 0.7,
   ippMedicoDefault: 0.5,
   pensaoConjugeReforma: 0.4,
