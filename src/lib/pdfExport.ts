@@ -9,29 +9,30 @@ const NOSSA_GREEN = [165, 201, 0];
 const CONTACT_PHONE = "+244 923 190 860";
 const CONTACT_EMAIL = "apoioaocliente@nossaseguros.ao";
 
-// Convert image to base64 for PDF
-async function getLogoBase64(): Promise<string> {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.drawImage(img, 0, 0);
-        resolve(canvas.toDataURL("image/png"));
-      } else {
-        resolve("");
-      }
-    };
-    img.onerror = () => resolve("");
-    img.src = logoNossa;
-  });
+// Pre-loaded logo data
+let logoDataUrl: string | null = null;
+
+// Preload logo on module load
+function preloadLogo() {
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.drawImage(img, 0, 0);
+      logoDataUrl = canvas.toDataURL("image/png");
+    }
+  };
+  img.src = logoNossa;
 }
 
-async function setupDocument(title: string): Promise<jsPDF> {
+// Start preloading immediately
+preloadLogo();
+
+function setupDocument(title: string): jsPDF {
   const doc = new jsPDF({
     orientation: "portrait",
     unit: "mm",
@@ -43,17 +44,22 @@ async function setupDocument(title: string): Promise<jsPDF> {
   doc.rect(0, 0, 210, 40, "F");
 
   // Add logo with white background
-  const logoBase64 = await getLogoBase64();
-  if (logoBase64) {
+  if (logoDataUrl) {
     // White rounded background for logo
     doc.setFillColor(255, 255, 255);
     doc.roundedRect(15, 8, 50, 24, 3, 3, "F");
-    doc.addImage(logoBase64, "PNG", 18, 11, 44, 18);
-  } else {
-    // Fallback text if logo fails
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(20);
-    doc.setFont("helvetica", "bold");
+    try {
+      doc.addImage(logoDataUrl, "PNG", 18, 11, 44, 18);
+    } catch (e) {
+      console.error("Error adding logo to PDF:", e);
+    }
+  }
+  
+  // Always add text header on the right
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(20);
+  doc.setFont("helvetica", "bold");
+  if (!logoDataUrl) {
     doc.text("Nossa Seguros", 20, 22);
   }
 
@@ -166,8 +172,8 @@ interface ResultadosPensaoMorte {
   totalIndemnizacao: number;
 }
 
-export async function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: ResultadosPensaoMorte) {
-  const doc = await setupDocument("Pensão por Morte");
+export function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: ResultadosPensaoMorte) {
+  const doc = setupDocument("Pensão por Morte");
   let y = 75;
 
   // Dados de Entrada
@@ -236,8 +242,8 @@ interface ResultadosITA {
   totalIndemnizacao: number;
 }
 
-export async function exportITAPDF(dados: DadosITA, resultados: ResultadosITA) {
-  const doc = await setupDocument("ITA - Incapacidade Temporária Absoluta");
+export function exportITAPDF(dados: DadosITA, resultados: ResultadosITA) {
+  const doc = setupDocument("ITA - Incapacidade Temporária Absoluta");
   let y = 75;
 
   // Dados de Entrada
@@ -290,8 +296,8 @@ interface ResultadosIPP {
   pensaoMensalIPP: number;
 }
 
-export async function exportIPPPDF(dados: DadosIPP, resultados: ResultadosIPP) {
-  const doc = await setupDocument("Pensão por IPP - Incapacidade Permanente Parcial");
+export function exportIPPPDF(dados: DadosIPP, resultados: ResultadosIPP) {
+  const doc = setupDocument("Pensão por IPP - Incapacidade Permanente Parcial");
   let y = 75;
 
   // Dados de Entrada
