@@ -109,7 +109,7 @@ export function PensaoMorte() {
     setShowResults(false);
   };
 
-  const handleExportPDF = async () => {
+  const handleExportPDF = () => {
     const dados = {
       salarioBaseMensal,
       subsidioFixoMensal,
@@ -124,7 +124,7 @@ export function PensaoMorte() {
       multiplicadorSubsidioMorte,
       multiplicadorFuneral,
     };
-    await exportPensaoMortePDF(dados, resultados);
+    exportPensaoMortePDF(dados, resultados);
   };
 
   return (
