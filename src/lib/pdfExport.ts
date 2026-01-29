@@ -86,7 +86,25 @@ function setupDocument(title: string): jsPDF {
   return doc;
 }
 
+// Footer height constant - content must stay above this
+const FOOTER_HEIGHT = 35;
+
+function getMaxContentY(doc: jsPDF): number {
+  return doc.internal.pageSize.height - FOOTER_HEIGHT;
+}
+
+function checkPageBreak(doc: jsPDF, currentY: number, neededSpace: number = 15): number {
+  const maxY = getMaxContentY(doc);
+  if (currentY + neededSpace > maxY) {
+    doc.addPage();
+    return 50; // Reset Y position for new page
+  }
+  return currentY;
+}
+
 function addSection(doc: jsPDF, title: string, yPos: number): number {
+  yPos = checkPageBreak(doc, yPos, 25);
+  
   doc.setFillColor(NOSSA_GREEN[0], NOSSA_GREEN[1], NOSSA_GREEN[2]);
   doc.rect(20, yPos, 4, 8, "F");
 
@@ -99,6 +117,8 @@ function addSection(doc: jsPDF, title: string, yPos: number): number {
 }
 
 function addRow(doc: jsPDF, label: string, value: string, yPos: number, isHighlight = false): number {
+  yPos = checkPageBreak(doc, yPos, 12);
+  
   if (isHighlight) {
     doc.setFillColor(245, 250, 235);
     doc.rect(20, yPos - 4, 170, 10, "F");
