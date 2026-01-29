@@ -102,14 +102,44 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-primary text-primary-foreground py-6 mt-12">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-sm opacity-80">
-            © {new Date().getFullYear()} Nossa Seguros. Todos os direitos reservados.
-          </p>
-          <p className="text-xs opacity-60 mt-2">
-            Este simulador tem carácter meramente indicativo e não constitui compromisso contratual.
-          </p>
+      <footer className="bg-secondary text-secondary-foreground py-8 mt-12">
+        <div className="container mx-auto px-4">
+          {/* Contact Information */}
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full border-2 border-secondary-foreground/80 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium opacity-90">Contact Center</p>
+                <p className="text-lg font-bold">+244 923 190 860</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full border-2 border-secondary-foreground/80 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium opacity-90">E-mail</p>
+                <p className="text-lg font-bold">apoioaocliente@nossaseguros.ao</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Divider */}
+          <div className="border-t border-secondary-foreground/30 pt-4">
+            <p className="text-center text-sm opacity-80">
+              © {new Date().getFullYear()} Nossa Seguros. Todos os direitos reservados.
+            </p>
+            <p className="text-center text-xs opacity-60 mt-1">
+              Este simulador tem carácter meramente indicativo e não constitui compromisso contratual.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
