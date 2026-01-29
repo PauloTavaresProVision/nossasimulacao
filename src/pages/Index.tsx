@@ -13,17 +13,17 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* Header + Hero Combined */}
       <header className="bg-gradient-to-br from-primary via-primary to-nossa-blue-light shadow-lg">
-        {/* Top bar with logo */}
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-center md:justify-between">
-            <div className="bg-white rounded-xl p-3 shadow-lg">
+        {/* Top bar with logo - centered */}
+        <div className="container mx-auto px-4 py-5">
+          <div className="flex flex-col items-center gap-4">
+            <div className="bg-white rounded-xl p-4 shadow-lg">
               <img
                 src={logoNossa}
                 alt="Nossa Seguros"
-                className="h-10 md:h-12 w-auto"
+                className="h-12 md:h-14 w-auto"
               />
             </div>
-            <div className="hidden md:flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
+            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-5 py-2">
               <div className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
               <span className="text-primary-foreground/90 text-sm font-medium">
                 Simulador de Compensações AT
