@@ -49,7 +49,7 @@ export function IPPCalculator() {
     setShowResults(false);
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     const dados = {
       salarioBaseMensal,
       subsidioFixoMensal,
@@ -57,7 +57,7 @@ export function IPPCalculator() {
       decreto,
       ippMedico,
     };
-    exportIPPPDF(dados, resultados);
+    await exportIPPPDF(dados, resultados);
   };
 
   return (

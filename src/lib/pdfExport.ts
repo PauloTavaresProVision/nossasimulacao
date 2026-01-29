@@ -1,40 +1,81 @@
 import jsPDF from "jspdf";
 import { formatCurrency, formatDate, formatDateTime, formatPercentage } from "./formatters";
+import logoNossa from "@/assets/logo-nossa-seguros.png";
 
 const NOSSA_BLUE = [30, 58, 95];
 const NOSSA_GREEN = [165, 201, 0];
 
-function setupDocument(title: string): jsPDF {
+// Contact information
+const CONTACT_PHONE = "+244 923 190 860";
+const CONTACT_EMAIL = "apoioaocliente@nossaseguros.ao";
+
+// Convert image to base64 for PDF
+async function getLogoBase64(): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL("image/png"));
+      } else {
+        resolve("");
+      }
+    };
+    img.onerror = () => resolve("");
+    img.src = logoNossa;
+  });
+}
+
+async function setupDocument(title: string): Promise<jsPDF> {
   const doc = new jsPDF({
     orientation: "portrait",
     unit: "mm",
     format: "a4",
   });
 
-  // Header
+  // Header background
   doc.setFillColor(NOSSA_BLUE[0], NOSSA_BLUE[1], NOSSA_BLUE[2]);
-  doc.rect(0, 0, 210, 35, "F");
+  doc.rect(0, 0, 210, 40, "F");
 
+  // Add logo with white background
+  const logoBase64 = await getLogoBase64();
+  if (logoBase64) {
+    // White rounded background for logo
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(15, 8, 50, 24, 3, 3, "F");
+    doc.addImage(logoBase64, "PNG", 18, 11, 44, 18);
+  } else {
+    // Fallback text if logo fails
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.text("Nossa Seguros", 20, 22);
+  }
+
+  // Header text on the right
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(20);
-  doc.setFont("helvetica", "bold");
-  doc.text("Nossa Seguros", 20, 18);
-
-  doc.setFontSize(12);
+  doc.setFontSize(11);
   doc.setFont("helvetica", "normal");
-  doc.text("Simulador de Cálculo de Compensações - AT", 20, 28);
+  doc.text("Simulador de Cálculo", 190, 18, { align: "right" });
+  doc.setFont("helvetica", "bold");
+  doc.text("Compensações AT", 190, 26, { align: "right" });
 
   // Title
   doc.setTextColor(NOSSA_BLUE[0], NOSSA_BLUE[1], NOSSA_BLUE[2]);
   doc.setFontSize(16);
   doc.setFont("helvetica", "bold");
-  doc.text(title, 20, 50);
+  doc.text(title, 20, 55);
 
   // Date
   doc.setTextColor(100, 100, 100);
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
-  doc.text(`Data/Hora: ${formatDateTime()}`, 20, 58);
+  doc.text(`Data/Hora: ${formatDateTime()}`, 20, 63);
 
   return doc;
 }
@@ -72,14 +113,29 @@ function addRow(doc: jsPDF, label: string, value: string, yPos: number, isHighli
 function addFooter(doc: jsPDF) {
   const pageHeight = doc.internal.pageSize.height;
 
-  doc.setDrawColor(200, 200, 200);
-  doc.line(20, pageHeight - 20, 190, pageHeight - 20);
+  // Green footer bar
+  doc.setFillColor(NOSSA_GREEN[0], NOSSA_GREEN[1], NOSSA_GREEN[2]);
+  doc.rect(0, pageHeight - 30, 210, 30, "F");
 
-  doc.setTextColor(150, 150, 150);
-  doc.setFontSize(8);
+  // Contact information
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  
+  // Phone
+  doc.text("Contact Center", 50, pageHeight - 20);
   doc.setFont("helvetica", "normal");
-  doc.text("Documento gerado pelo Simulador de Compensações AT - Nossa Seguros", 105, pageHeight - 12, { align: "center" });
-  doc.text("Este documento é meramente indicativo e não constitui compromisso contratual.", 105, pageHeight - 7, { align: "center" });
+  doc.text(CONTACT_PHONE, 50, pageHeight - 14);
+
+  // Email
+  doc.setFont("helvetica", "bold");
+  doc.text("E-mail", 130, pageHeight - 20);
+  doc.setFont("helvetica", "normal");
+  doc.text(CONTACT_EMAIL, 130, pageHeight - 14);
+
+  // Disclaimer
+  doc.setFontSize(7);
+  doc.text("Este documento é meramente indicativo e não constitui compromisso contratual.", 105, pageHeight - 6, { align: "center" });
 }
 
 interface DadosPensaoMorte {
@@ -110,9 +166,9 @@ interface ResultadosPensaoMorte {
   totalIndemnizacao: number;
 }
 
-export function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: ResultadosPensaoMorte) {
-  const doc = setupDocument("Pensão por Morte");
-  let y = 70;
+export async function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: ResultadosPensaoMorte) {
+  const doc = await setupDocument("Pensão por Morte");
+  let y = 75;
 
   // Dados de Entrada
   y = addSection(doc, "Dados de Entrada", y);
@@ -180,9 +236,9 @@ interface ResultadosITA {
   totalIndemnizacao: number;
 }
 
-export function exportITAPDF(dados: DadosITA, resultados: ResultadosITA) {
-  const doc = setupDocument("ITA - Incapacidade Temporária Absoluta");
-  let y = 70;
+export async function exportITAPDF(dados: DadosITA, resultados: ResultadosITA) {
+  const doc = await setupDocument("ITA - Incapacidade Temporária Absoluta");
+  let y = 75;
 
   // Dados de Entrada
   y = addSection(doc, "Dados de Entrada", y);
@@ -234,9 +290,9 @@ interface ResultadosIPP {
   pensaoMensalIPP: number;
 }
 
-export function exportIPPPDF(dados: DadosIPP, resultados: ResultadosIPP) {
-  const doc = setupDocument("Pensão por IPP - Incapacidade Permanente Parcial");
-  let y = 70;
+export async function exportIPPPDF(dados: DadosIPP, resultados: ResultadosIPP) {
+  const doc = await setupDocument("Pensão por IPP - Incapacidade Permanente Parcial");
+  let y = 75;
 
   // Dados de Entrada
   y = addSection(doc, "Dados de Entrada", y);

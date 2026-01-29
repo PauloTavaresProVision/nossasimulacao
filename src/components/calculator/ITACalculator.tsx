@@ -94,7 +94,7 @@ export function ITACalculator() {
     setShowResults(false);
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     const dados = {
       salarioBaseMensal,
       subsidioFixoMensal,
@@ -104,7 +104,7 @@ export function ITACalculator() {
       dataInicioAmbulatorio,
       dataFimAmbulatorio,
     };
-    exportITAPDF(dados, resultados);
+    await exportITAPDF(dados, resultados);
   };
 
   const canCalculate = !erroInternamento && !erroAmbulatorio;
