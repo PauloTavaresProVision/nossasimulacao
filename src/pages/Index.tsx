@@ -3,16 +3,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PensaoMorte } from "@/components/calculator/PensaoMorte";
 import { ITACalculator } from "@/components/calculator/ITACalculator";
 import { IPPCalculator } from "@/components/calculator/IPPCalculator";
+import { AdminPanel } from "@/components/admin/AdminPanel";
 import logoNossa from "@/assets/logo-nossa-seguros.png";
-import { Heart, Clock, Percent } from "lucide-react";
+import { Heart, Clock, Percent, Settings } from "lucide-react";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("pensao-morte");
+  const [adminOpen, setAdminOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Admin Panel */}
+      <AdminPanel open={adminOpen} onOpenChange={setAdminOpen} />
+
       {/* Header + Hero Combined */}
-      <header className="bg-gradient-to-br from-primary via-primary to-nossa-blue-light shadow-lg">
+      <header className="bg-gradient-to-br from-primary via-primary to-nossa-blue-light shadow-lg relative">
+        {/* Admin button - discrete */}
+        <button
+          onClick={() => setAdminOpen(true)}
+          className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+          title="Administração"
+        >
+          <Settings className="h-5 w-5 text-primary-foreground/70" />
+        </button>
+
         {/* Top bar with logo - centered */}
         <div className="container mx-auto px-4 py-5">
           <div className="flex flex-col items-center gap-4">
