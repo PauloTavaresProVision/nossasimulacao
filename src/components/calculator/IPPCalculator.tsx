@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
 import {
   Tooltip,
   TooltipContent,
@@ -18,44 +17,48 @@ interface ResultadosIPP {
   pensaoMensalIPP: number;
 }
 
+const DECRETO_FIXO = 0.7;
+
 export function IPPCalculator() {
   // Salário de referência
   const [salarioBaseMensal, setSalarioBaseMensal] = useState(0);
   const [subsidioFixoMensal, setSubsidioFixoMensal] = useState(0);
   const [numSalariosAno, setNumSalariosAno] = useState(13);
+  const [nomeSinistrado, setNomeSinistrado] = useState("");
 
-  // Fatores IPP
-  const [decreto, setDecreto] = useState(0.7);
-  const [ippMedico, setIppMedico] = useState(0.5);
+  // IPP Médico (0-100%)
+  const [ippMedico, setIppMedico] = useState(50);
 
   const [showResults, setShowResults] = useState(false);
 
   const resultados = useMemo((): ResultadosIPP => {
     const ref = calcularReferenciaAnual(salarioBaseMensal, subsidioFixoMensal, numSalariosAno);
-    const pensaoMensalIPP = ref * decreto * ippMedico;
+    const ippFraction = ippMedico / 100;
+    const pensaoMensalIPP = ref * DECRETO_FIXO * ippFraction;
 
     return {
       referenciaAnual: ref,
       pensaoMensalIPP,
     };
-  }, [salarioBaseMensal, subsidioFixoMensal, numSalariosAno, decreto, ippMedico]);
+  }, [salarioBaseMensal, subsidioFixoMensal, numSalariosAno, ippMedico]);
 
   const handleLimpar = () => {
     setSalarioBaseMensal(0);
     setSubsidioFixoMensal(0);
     setNumSalariosAno(13);
-    setDecreto(0.7);
-    setIppMedico(0.5);
+    setNomeSinistrado("");
+    setIppMedico(50);
     setShowResults(false);
   };
 
   const handleExportPDF = () => {
     const dados = {
+      nomeSinistrado,
       salarioBaseMensal,
       subsidioFixoMensal,
       numSalariosAno,
-      decreto,
-      ippMedico,
+      decreto: DECRETO_FIXO,
+      ippMedico: ippMedico / 100,
     };
     exportIPPPDF(dados, resultados);
   };
@@ -69,84 +72,57 @@ export function IPPCalculator() {
         setSubsidioFixoMensal={setSubsidioFixoMensal}
         numSalariosAno={numSalariosAno}
         setNumSalariosAno={setNumSalariosAno}
+        nomeSinistrado={nomeSinistrado}
+        setNomeSinistrado={setNomeSinistrado}
       />
 
       {/* Fatores IPP */}
       <div className="card-elevated p-6 mb-6">
         <h3 className="text-lg font-semibold text-foreground mb-6">Fatores de Cálculo</h3>
 
-        <div className="space-y-8">
-          {/* Decreto */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Label className="text-sm font-medium">Fator Decreto</Label>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>Coeficiente estabelecido por decreto. Valor entre 0 e 1 (ex: 0.7 = 70%)</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              <span className="text-lg font-semibold text-nossa-green">{(decreto * 100).toFixed(0)}%</span>
+        <div className="space-y-6">
+          {/* Decreto fixo - apenas informativo */}
+          <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-medium">Fator Decreto</Label>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>Coeficiente estabelecido por decreto: 70% (valor fixo)</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
-            <div className="flex items-center gap-4">
-              <Slider
-                value={[decreto]}
-                onValueChange={(v) => setDecreto(v[0])}
-                min={0}
-                max={1}
-                step={0.01}
-                className="flex-1"
-              />
-              <Input
-                type="number"
-                min={0}
-                max={1}
-                step={0.01}
-                value={decreto}
-                onChange={(e) => setDecreto(Math.min(1, Math.max(0, Number(e.target.value))))}
-                className="input-styled w-24"
-              />
-            </div>
+            <span className="text-lg font-semibold text-nossa-green">70%</span>
           </div>
 
           {/* IPP Médico */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Label className="text-sm font-medium">IPP Médico</Label>
+                <Label className="text-sm font-medium">Pensão IPP</Label>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
-                    <p>Incapacidade Permanente Parcial determinada por avaliação médica. Valor entre 0 e 1 (ex: 0.5 = 50%)</p>
+                    <p>Incapacidade Permanente Parcial determinada por avaliação médica (0 a 100)</p>
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <span className="text-lg font-semibold text-nossa-green">{(ippMedico * 100).toFixed(0)}%</span>
             </div>
             <div className="flex items-center gap-4">
-              <Slider
-                value={[ippMedico]}
-                onValueChange={(v) => setIppMedico(v[0])}
-                min={0}
-                max={1}
-                step={0.01}
-                className="flex-1"
-              />
               <Input
                 type="number"
                 min={0}
-                max={1}
-                step={0.01}
+                max={100}
+                step={1}
                 value={ippMedico}
-                onChange={(e) => setIppMedico(Math.min(1, Math.max(0, Number(e.target.value))))}
-                className="input-styled w-24"
+                onChange={(e) => setIppMedico(Math.min(100, Math.max(0, Number(e.target.value))))}
+                className="input-styled w-32"
               />
+              <span className="text-sm text-muted-foreground">de 100</span>
             </div>
           </div>
         </div>
@@ -154,10 +130,10 @@ export function IPPCalculator() {
         {/* Fórmula visual */}
         <div className="mt-6 p-4 bg-muted/50 rounded-lg">
           <p className="text-sm text-muted-foreground text-center">
-            Pensão Mensal = Ref × Decreto × IPP Médico
+            Pensão Mensal = Ref × 70% × (IPP ÷ 100)
           </p>
           <p className="text-center mt-2 font-mono text-sm">
-            = {formatCurrency(resultados.referenciaAnual)} × {decreto} × {ippMedico}
+            = {formatCurrency(resultados.referenciaAnual)} × 0,70 × {(ippMedico / 100).toFixed(2)}
           </p>
         </div>
       </div>
@@ -194,11 +170,11 @@ export function IPPCalculator() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-card p-4 rounded-lg border border-border">
                 <p className="text-sm text-muted-foreground">Fator Decreto</p>
-                <p className="text-lg font-semibold text-foreground">{(decreto * 100).toFixed(1)}%</p>
+                <p className="text-lg font-semibold text-foreground">70%</p>
               </div>
               <div className="bg-card p-4 rounded-lg border border-border">
-                <p className="text-sm text-muted-foreground">IPP Médico</p>
-                <p className="text-lg font-semibold text-foreground">{(ippMedico * 100).toFixed(1)}%</p>
+                <p className="text-sm text-muted-foreground">Pensão IPP</p>
+                <p className="text-lg font-semibold text-foreground">{ippMedico} / 100</p>
               </div>
             </div>
 

@@ -159,8 +159,8 @@ export function AdminPanel({ open, onOpenChange }: AdminPanelProps) {
                 {renderFactorInput("pensaoPais", "Pais (cada)")}
                 <div className="border-t pt-3 mt-3">
                   <h4 className="font-medium text-sm text-muted-foreground mb-3">Subsídios</h4>
-                  {renderFactorInput("subsidioMorteMultiplicador", "Subsídio Morte", "multiplier")}
-                  {renderFactorInput("subsidioFuneralMultiplicador", "Subsídio Funeral", "multiplier")}
+                  {renderFactorInput("subsidioMorteMultiplicador", "Subsídio de Morte", "multiplier")}
+                  {renderFactorInput("subsidioFuneralMultiplicador", "Subsídio de Despesa de Funeral", "multiplier")}
                 </div>
               </TabsContent>
             </Tabs>

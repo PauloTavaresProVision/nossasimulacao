@@ -165,6 +165,7 @@ function addFooter(doc: jsPDF) {
 }
 
 interface DadosPensaoMorte {
+  nomeSinistrado?: string;
   salarioBaseMensal: number;
   subsidioFixoMensal: number;
   numSalariosAno: number;
@@ -198,6 +199,9 @@ export function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: Result
 
   // Dados de Entrada
   y = addSection(doc, "Dados de Entrada", y);
+  if (dados.nomeSinistrado) {
+    y = addRow(doc, "Falecido", dados.nomeSinistrado, y);
+  }
   y = addRow(doc, "Salário Base Mensal", formatCurrency(dados.salarioBaseMensal), y);
   y = addRow(doc, "Subsídio Fixo Mensal", formatCurrency(dados.subsidioFixoMensal), y);
   y = addRow(doc, "Nº Salários/Ano", dados.numSalariosAno.toString(), y);
@@ -206,8 +210,8 @@ export function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: Result
   y = addRow(doc, "Número de Filhos", dados.numFilhos.toString(), y);
   y = addRow(doc, "Pai", dados.temPai ? "Sim" : "Não", y);
   y = addRow(doc, "Mãe", dados.temMae ? "Sim" : "Não", y);
-  y = addRow(doc, "Multiplicador Subsídio Morte", `×${dados.multiplicadorSubsidioMorte}`, y);
-  y = addRow(doc, "Multiplicador Funeral", `×${dados.multiplicadorFuneral}`, y);
+  y = addRow(doc, "Subsídio de Morte", `×${dados.multiplicadorSubsidioMorte}`, y);
+  y = addRow(doc, "Subsídio de Despesa de Funeral", `×${dados.multiplicadorFuneral}`, y);
 
   y += 5;
 
@@ -233,15 +237,16 @@ export function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: Result
 
   y = addRow(doc, "Pensão Mensal Total", formatCurrency(resultados.pensaoMensalTotal), y, true);
   y += 3;
-  y = addRow(doc, `Subsídio por Morte (×${dados.multiplicadorSubsidioMorte})`, formatCurrency(resultados.subsidioMorte), y);
-  y = addRow(doc, `Subsídio Funeral (×${dados.multiplicadorFuneral})`, formatCurrency(resultados.subsidioFuneral), y);
-  y = addRow(doc, "Total Indemnização", formatCurrency(resultados.totalIndemnizacao), y, true);
+  y = addRow(doc, `Subsídio de Morte (×${dados.multiplicadorSubsidioMorte})`, formatCurrency(resultados.subsidioMorte), y);
+  y = addRow(doc, `Subsídio de Despesa de Funeral (×${dados.multiplicadorFuneral})`, formatCurrency(resultados.subsidioFuneral), y);
+  y = addRow(doc, "Total Indemnização (Pensão + Subsídios)", formatCurrency(resultados.totalIndemnizacao), y, true);
 
   addFooter(doc);
   doc.save("pensao-morte-nossa-seguros.pdf");
 }
 
 interface DadosITA {
+  nomeSinistrado?: string;
   salarioBaseMensal: number;
   subsidioFixoMensal: number;
   numSalariosAno: number;
@@ -268,6 +273,9 @@ export function exportITAPDF(dados: DadosITA, resultados: ResultadosITA) {
 
   // Dados de Entrada
   y = addSection(doc, "Dados de Entrada", y);
+  if (dados.nomeSinistrado) {
+    y = addRow(doc, "Sinistrado", dados.nomeSinistrado, y);
+  }
   y = addRow(doc, "Salário Base Mensal", formatCurrency(dados.salarioBaseMensal), y);
   y = addRow(doc, "Subsídio Fixo Mensal", formatCurrency(dados.subsidioFixoMensal), y);
   y = addRow(doc, "Nº Salários/Ano", dados.numSalariosAno.toString(), y);
@@ -304,6 +312,7 @@ export function exportITAPDF(dados: DadosITA, resultados: ResultadosITA) {
 }
 
 interface DadosIPP {
+  nomeSinistrado?: string;
   salarioBaseMensal: number;
   subsidioFixoMensal: number;
   numSalariosAno: number;
@@ -322,11 +331,14 @@ export function exportIPPPDF(dados: DadosIPP, resultados: ResultadosIPP) {
 
   // Dados de Entrada
   y = addSection(doc, "Dados de Entrada", y);
+  if (dados.nomeSinistrado) {
+    y = addRow(doc, "Pensionista", dados.nomeSinistrado, y);
+  }
   y = addRow(doc, "Salário Base Mensal", formatCurrency(dados.salarioBaseMensal), y);
   y = addRow(doc, "Subsídio Fixo Mensal", formatCurrency(dados.subsidioFixoMensal), y);
   y = addRow(doc, "Nº Salários/Ano", dados.numSalariosAno.toString(), y);
-  y = addRow(doc, "Fator Decreto", formatPercentage(dados.decreto), y);
-  y = addRow(doc, "IPP Médico", formatPercentage(dados.ippMedico), y);
+  y = addRow(doc, "Fator Decreto", "70% (fixo)", y);
+  y = addRow(doc, "Pensão IPP", `${Math.round(dados.ippMedico * 100)} / 100`, y);
 
   y += 5;
 
@@ -337,7 +349,7 @@ export function exportIPPPDF(dados: DadosIPP, resultados: ResultadosIPP) {
   // Fórmula
   doc.setTextColor(100, 100, 100);
   doc.setFontSize(9);
-  doc.text(`Fórmula: ${formatCurrency(resultados.referenciaAnual)} × ${dados.decreto} × ${dados.ippMedico}`, 25, y);
+  doc.text(`Fórmula: ${formatCurrency(resultados.referenciaAnual)} × 0,70 × ${dados.ippMedico.toFixed(2)}`, 25, y);
   y += 10;
 
   y = addRow(doc, "Pensão Mensal por IPP", formatCurrency(resultados.pensaoMensalIPP), y, true);
