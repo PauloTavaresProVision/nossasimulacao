@@ -5,7 +5,7 @@ import { ITACalculator } from "@/components/calculator/ITACalculator";
 import { IPPCalculator } from "@/components/calculator/IPPCalculator";
 import { AdminPanel } from "@/components/admin/AdminPanel";
 import logoNossa from "@/assets/logo-nossa-seguros.png";
-import { Heart, Clock, Percent, Settings } from "lucide-react";
+import { Heart, Clock, Activity, Settings } from "lucide-react";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("pensao-morte");
@@ -69,7 +69,7 @@ const Index = () => {
                 <span>Incapacidade Temporária</span>
               </div>
               <div className="hidden md:flex items-center gap-2">
-                <Percent className="h-4 w-4" />
+                <Activity className="h-4 w-4" />
                 <span>Pensão por IPP</span>
               </div>
             </div>
@@ -111,7 +111,7 @@ const Index = () => {
                   : "tab-inactive"
               }`}
             >
-              <Percent className="h-5 w-5" />
+              <Activity className="h-5 w-5" />
               <span>Pensão por IPP</span>
             </TabsTrigger>
           </TabsList>
