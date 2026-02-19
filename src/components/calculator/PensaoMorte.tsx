@@ -31,6 +31,7 @@ export function PensaoMorte() {
   const [salarioBaseMensal, setSalarioBaseMensal] = useState(0);
   const [subsidioFixoMensal, setSubsidioFixoMensal] = useState(0);
   const [numSalariosAno, setNumSalariosAno] = useState(13);
+  const [nomeSinistrado, setNomeSinistrado] = useState("");
 
   // Beneficiários
   const [temConjuge, setTemConjuge] = useState(false);
@@ -64,7 +65,7 @@ export function PensaoMorte() {
     const pensaoMensalTotal = valorConjuge + valorExConjuge + valorFilhos + valorPai + valorMae;
     const subsidioMorte = ref * multiplicadorSubsidioMorte;
     const subsidioFuneral = ref * multiplicadorFuneral;
-    const totalIndemnizacao = subsidioMorte + subsidioFuneral;
+    const totalIndemnizacao = pensaoMensalTotal + subsidioMorte + subsidioFuneral;
 
     return {
       referenciaAnual: ref,
@@ -97,6 +98,7 @@ export function PensaoMorte() {
     setSalarioBaseMensal(0);
     setSubsidioFixoMensal(0);
     setNumSalariosAno(13);
+    setNomeSinistrado("");
     setTemConjuge(false);
     setConjugeIdadeReforma(false);
     setTemExConjuge(false);
@@ -111,6 +113,7 @@ export function PensaoMorte() {
 
   const handleExportPDF = () => {
     const dados = {
+      nomeSinistrado,
       salarioBaseMensal,
       subsidioFixoMensal,
       numSalariosAno,
@@ -136,6 +139,8 @@ export function PensaoMorte() {
         setSubsidioFixoMensal={setSubsidioFixoMensal}
         numSalariosAno={numSalariosAno}
         setNumSalariosAno={setNumSalariosAno}
+        nomeSinistrado={nomeSinistrado}
+        setNomeSinistrado={setNomeSinistrado}
       />
 
       {/* Beneficiários */}
@@ -236,27 +241,27 @@ export function PensaoMorte() {
         </div>
       </div>
 
-      {/* Multiplicadores */}
+      {/* Subsídios */}
       <div className="card-elevated p-6 mb-6">
         <h3 className="text-lg font-semibold text-foreground mb-4">Subsídios</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-1">
-              <Label className="text-sm font-medium">Multiplicador Subsídio Morte</Label>
+              <Label className="text-sm font-medium">Subsídio de Morte</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Valor padrão: 6 × Remuneração de Referência</p>
+                  <p>Valor padrão: 6. Pode ser 7 × Remuneração de Referência</p>
                 </TooltipContent>
               </Tooltip>
             </div>
             <Input
               type="number"
               min={0}
-              step={0.1}
+              step={1}
               value={multiplicadorSubsidioMorte}
               onChange={(e) => setMultiplicadorSubsidioMorte(Number(e.target.value))}
               className="input-styled max-w-[120px]"
@@ -265,20 +270,20 @@ export function PensaoMorte() {
 
           <div className="space-y-2">
             <div className="flex items-center gap-1">
-              <Label className="text-sm font-medium">Multiplicador Funeral</Label>
+              <Label className="text-sm font-medium">Subsídio de Despesa de Funeral</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Padrão: 2. Pode ser 4 em caso de transladação</p>
+                  <p>Padrão: 2. Pode ser 4 ou 5 em caso de transladação</p>
                 </TooltipContent>
               </Tooltip>
             </div>
             <Input
               type="number"
               min={0}
-              step={0.1}
+              step={1}
               value={multiplicadorFuneral}
               onChange={(e) => setMultiplicadorFuneral(Number(e.target.value))}
               className="input-styled max-w-[120px]"
@@ -356,17 +361,17 @@ export function PensaoMorte() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-card p-4 rounded-lg border border-border">
-                <p className="text-sm text-muted-foreground">Subsídio por Morte (×{multiplicadorSubsidioMorte})</p>
+                <p className="text-sm text-muted-foreground">Subsídio de Morte (×{multiplicadorSubsidioMorte})</p>
                 <p className="text-lg font-semibold text-foreground">{formatCurrency(resultados.subsidioMorte)}</p>
               </div>
               <div className="bg-card p-4 rounded-lg border border-border">
-                <p className="text-sm text-muted-foreground">Subsídio Funeral (×{multiplicadorFuneral})</p>
+                <p className="text-sm text-muted-foreground">Subsídio de Despesa de Funeral (×{multiplicadorFuneral})</p>
                 <p className="text-lg font-semibold text-foreground">{formatCurrency(resultados.subsidioFuneral)}</p>
               </div>
             </div>
 
             <div className="result-highlight bg-gradient-to-r from-primary/10 to-primary/5 border-l-primary">
-              <p className="text-sm text-muted-foreground">Total Indemnização (Morte + Funeral)</p>
+              <p className="text-sm text-muted-foreground">Total Indemnização (Pensão + Subsídios)</p>
               <p className="text-2xl font-bold text-primary">{formatCurrency(resultados.totalIndemnizacao)}</p>
             </div>
           </div>

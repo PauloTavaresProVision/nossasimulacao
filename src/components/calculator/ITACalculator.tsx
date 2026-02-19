@@ -41,6 +41,7 @@ export function ITACalculator() {
   const [salarioBaseMensal, setSalarioBaseMensal] = useState(0);
   const [subsidioFixoMensal, setSubsidioFixoMensal] = useState(0);
   const [numSalariosAno, setNumSalariosAno] = useState(13);
+  const [nomeSinistrado, setNomeSinistrado] = useState("");
 
   // Datas
   const [dataInicioInternamento, setDataInicioInternamento] = useState("");
@@ -94,6 +95,7 @@ export function ITACalculator() {
     setSalarioBaseMensal(0);
     setSubsidioFixoMensal(0);
     setNumSalariosAno(13);
+    setNomeSinistrado("");
     setDataInicioInternamento("");
     setDataFimInternamento("");
     setDataInicioAmbulatorio("");
@@ -103,6 +105,7 @@ export function ITACalculator() {
 
   const handleExportPDF = () => {
     const dados = {
+      nomeSinistrado,
       salarioBaseMensal,
       subsidioFixoMensal,
       numSalariosAno,
@@ -125,6 +128,8 @@ export function ITACalculator() {
         setSubsidioFixoMensal={setSubsidioFixoMensal}
         numSalariosAno={numSalariosAno}
         setNumSalariosAno={setNumSalariosAno}
+        nomeSinistrado={nomeSinistrado}
+        setNomeSinistrado={setNomeSinistrado}
       />
 
       {/* Período de Internamento */}

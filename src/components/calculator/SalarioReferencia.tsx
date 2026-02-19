@@ -14,6 +14,8 @@ interface SalarioReferenciaProps {
   setSubsidioFixoMensal: (value: number) => void;
   numSalariosAno: number;
   setNumSalariosAno: (value: number) => void;
+  nomeSinistrado?: string;
+  setNomeSinistrado?: (value: string) => void;
 }
 
 export function SalarioReferencia({
@@ -23,6 +25,8 @@ export function SalarioReferencia({
   setSubsidioFixoMensal,
   numSalariosAno,
   setNumSalariosAno,
+  nomeSinistrado = "",
+  setNomeSinistrado,
 }: SalarioReferenciaProps) {
   return (
     <div className="card-elevated p-6 mb-6 animate-fade-in">
@@ -42,37 +46,55 @@ export function SalarioReferencia({
         </Tooltip>
       </div>
 
+      {setNomeSinistrado !== undefined && (
+        <div className="mb-4 space-y-2">
+          <Label htmlFor="nomeSinistrado" className="text-sm font-medium">
+            Nome do Sinistrado / Pensionista / Falecido
+          </Label>
+          <Input
+            id="nomeSinistrado"
+            type="text"
+            value={nomeSinistrado}
+            onChange={(e) => setNomeSinistrado(e.target.value)}
+            placeholder="Introduza o nome"
+            className="input-styled"
+          />
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="salarioBase" className="text-sm font-medium">
-            Salário Base Mensal (AOA)
+            Salário Base Mensal (KZ)
           </Label>
           <Input
             id="salarioBase"
             type="number"
             min={0}
+            step={1}
             value={salarioBaseMensal || ""}
             onChange={(e) =>
               setSalarioBaseMensal(Math.max(0, Number(e.target.value)))
             }
-            placeholder="0,00"
+            placeholder="0"
             className="input-styled"
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="subsidioFixo" className="text-sm font-medium">
-            Subsídio Fixo Mensal (AOA)
+            Subsídio Fixo Mensal (KZ)
           </Label>
           <Input
             id="subsidioFixo"
             type="number"
             min={0}
+            step={1}
             value={subsidioFixoMensal || ""}
             onChange={(e) =>
               setSubsidioFixoMensal(Math.max(0, Number(e.target.value)))
             }
-            placeholder="0,00"
+            placeholder="0"
             className="input-styled"
           />
         </div>
