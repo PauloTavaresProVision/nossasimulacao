@@ -199,9 +199,7 @@ export function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: Result
 
   // Dados de Entrada
   y = addSection(doc, "Dados de Entrada", y);
-  if (dados.nomeSinistrado) {
-    y = addRow(doc, "Falecido", dados.nomeSinistrado, y);
-  }
+  y = addRow(doc, "Falecido", dados.nomeSinistrado || "—", y);
   y = addRow(doc, "Salário Base Mensal", formatCurrency(dados.salarioBaseMensal), y);
   y = addRow(doc, "Subsídio Fixo Mensal", formatCurrency(dados.subsidioFixoMensal), y);
   y = addRow(doc, "Nº Salários/Ano", dados.numSalariosAno.toString(), y);
@@ -273,9 +271,7 @@ export function exportITAPDF(dados: DadosITA, resultados: ResultadosITA) {
 
   // Dados de Entrada
   y = addSection(doc, "Dados de Entrada", y);
-  if (dados.nomeSinistrado) {
-    y = addRow(doc, "Sinistrado", dados.nomeSinistrado, y);
-  }
+  y = addRow(doc, "Sinistrado", dados.nomeSinistrado || "—", y);
   y = addRow(doc, "Salário Base Mensal", formatCurrency(dados.salarioBaseMensal), y);
   y = addRow(doc, "Subsídio Fixo Mensal", formatCurrency(dados.subsidioFixoMensal), y);
   y = addRow(doc, "Nº Salários/Ano", dados.numSalariosAno.toString(), y);
@@ -331,9 +327,7 @@ export function exportIPPPDF(dados: DadosIPP, resultados: ResultadosIPP) {
 
   // Dados de Entrada
   y = addSection(doc, "Dados de Entrada", y);
-  if (dados.nomeSinistrado) {
-    y = addRow(doc, "Pensionista", dados.nomeSinistrado, y);
-  }
+  y = addRow(doc, "Pensionista", dados.nomeSinistrado || "—", y);
   y = addRow(doc, "Salário Base Mensal", formatCurrency(dados.salarioBaseMensal), y);
   y = addRow(doc, "Subsídio Fixo Mensal", formatCurrency(dados.subsidioFixoMensal), y);
   y = addRow(doc, "Nº Salários/Ano", dados.numSalariosAno.toString(), y);
