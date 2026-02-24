@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -258,14 +259,15 @@ export function PensaoMorte() {
                 </TooltipContent>
               </Tooltip>
             </div>
-            <Input
-              type="number"
-              min={0}
-              step={1}
-              value={multiplicadorSubsidioMorte}
-              onChange={(e) => setMultiplicadorSubsidioMorte(Number(e.target.value))}
-              className="input-styled max-w-[120px]"
-            />
+            <Select value={String(multiplicadorSubsidioMorte)} onValueChange={(v) => setMultiplicadorSubsidioMorte(Number(v))}>
+              <SelectTrigger className="input-styled max-w-[120px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="6">6</SelectItem>
+                <SelectItem value="7">7</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
@@ -280,14 +282,16 @@ export function PensaoMorte() {
                 </TooltipContent>
               </Tooltip>
             </div>
-            <Input
-              type="number"
-              min={0}
-              step={1}
-              value={multiplicadorFuneral}
-              onChange={(e) => setMultiplicadorFuneral(Number(e.target.value))}
-              className="input-styled max-w-[120px]"
-            />
+            <Select value={String(multiplicadorFuneral)} onValueChange={(v) => setMultiplicadorFuneral(Number(v))}>
+              <SelectTrigger className="input-styled max-w-[120px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="2">2</SelectItem>
+                <SelectItem value="4">4</SelectItem>
+                <SelectItem value="5">5</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
