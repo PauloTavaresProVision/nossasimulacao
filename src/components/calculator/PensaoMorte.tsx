@@ -227,7 +227,7 @@ export function PensaoMorte() {
 
           {/* Ascendentes */}
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Ascendentes (10% cada)</Label>
+            <Label className="text-sm font-medium">Ascendente (10% cada)</Label>
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Tem Pai?</Label>
@@ -249,7 +249,7 @@ export function PensaoMorte() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-1">
-              <Label className="text-sm font-medium">Subsídio de Morte</Label>
+              <Label className="text-sm font-medium">Subsídio por Morte</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -272,7 +272,7 @@ export function PensaoMorte() {
 
           <div className="space-y-2">
             <div className="flex items-center gap-1">
-              <Label className="text-sm font-medium">Subsídio de Despesa de Funeral</Label>
+              <Label className="text-sm font-medium">Despesa de Funeral</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -365,11 +365,11 @@ export function PensaoMorte() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-card p-4 rounded-lg border border-border">
-                <p className="text-sm text-muted-foreground">Subsídio de Morte (×{multiplicadorSubsidioMorte})</p>
+                <p className="text-sm text-muted-foreground">Subsídio por Morte (×{multiplicadorSubsidioMorte})</p>
                 <p className="text-lg font-semibold text-foreground">{formatCurrency(resultados.subsidioMorte)}</p>
               </div>
               <div className="bg-card p-4 rounded-lg border border-border">
-                <p className="text-sm text-muted-foreground">Subsídio de Despesa de Funeral (×{multiplicadorFuneral})</p>
+                <p className="text-sm text-muted-foreground">Despesa de Funeral (×{multiplicadorFuneral})</p>
                 <p className="text-lg font-semibold text-foreground">{formatCurrency(resultados.subsidioFuneral)}</p>
               </div>
             </div>

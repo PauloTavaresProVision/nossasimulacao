@@ -49,7 +49,7 @@ export function SalarioReferencia({
       {setNomeSinistrado !== undefined && (
         <div className="mb-4 space-y-2">
           <Label htmlFor="nomeSinistrado" className="text-sm font-medium">
-            Nome do Sinistrado / Pensionista / Falecido
+            Nome do Sinistrado
           </Label>
           <Input
             id="nomeSinistrado"
@@ -68,7 +68,7 @@ export function SalarioReferencia({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="salarioBase" className="text-sm font-medium">
-            Salário Base Mensal (KZ)
+            Salário Base Mensal
           </Label>
           <Input
             id="salarioBase"
@@ -86,7 +86,7 @@ export function SalarioReferencia({
 
         <div className="space-y-2">
           <Label htmlFor="subsidioFixo" className="text-sm font-medium">
-            Subsídio Fixo Mensal (KZ)
+            Subsídio Fixo Mensal
           </Label>
           <Input
             id="subsidioFixo"
