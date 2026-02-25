@@ -17,20 +17,23 @@ function preloadLogo() {
   const img = new Image();
   img.crossOrigin = "anonymous";
   img.onload = () => {
-    const scale = 4; // Higher resolution for crisp PDF rendering
+    const scale = 2;
     const canvas = document.createElement("canvas");
-    canvas.width = img.width * scale;
-    canvas.height = img.height * scale;
+    canvas.width = img.naturalWidth * scale;
+    canvas.height = img.naturalHeight * scale;
     const ctx = canvas.getContext("2d");
     if (ctx) {
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      logoDataUrl = canvas.toDataURL("image/png");
+      logoDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+      logoAspectRatio = img.naturalWidth / img.naturalHeight;
     }
   };
   img.src = logoNossa;
 }
+
+let logoAspectRatio = 2.5;
 
 // Start preloading immediately
 preloadLogo();
@@ -48,11 +51,15 @@ function setupDocument(title: string): jsPDF {
 
   // Add logo with white background
   if (logoDataUrl) {
+    // Calculate dimensions preserving aspect ratio
+    const logoHeight = 22;
+    const logoWidth = logoHeight * logoAspectRatio;
+    const padding = 3;
     // White rounded background for logo
     doc.setFillColor(255, 255, 255);
-    doc.roundedRect(15, 8, 50, 24, 3, 3, "F");
+    doc.roundedRect(15, 9, logoWidth + padding * 2, logoHeight + padding * 2, 3, 3, "F");
     try {
-      doc.addImage(logoDataUrl, "PNG", 18, 11, 44, 18);
+      doc.addImage(logoDataUrl, "JPEG", 15 + padding, 9 + padding, logoWidth, logoHeight);
     } catch (e) {
       console.error("Error adding logo to PDF:", e);
     }
