@@ -23,10 +23,13 @@ function preloadLogo() {
     canvas.height = img.naturalHeight * scale;
     const ctx = canvas.getContext("2d");
     if (ctx) {
+      // White background to avoid black from transparency
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      logoDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+      logoDataUrl = canvas.toDataURL("image/jpeg", 0.92);
       logoAspectRatio = img.naturalWidth / img.naturalHeight;
     }
   };
