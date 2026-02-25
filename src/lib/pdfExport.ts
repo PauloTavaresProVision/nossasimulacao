@@ -55,7 +55,7 @@ function setupDocument(title: string): jsPDF {
   // Add logo with white background
   if (logoDataUrl) {
     // Calculate dimensions preserving aspect ratio
-    const logoHeight = 22;
+    const logoHeight = 14;
     const logoWidth = logoHeight * logoAspectRatio;
     const padding = 3;
     // White rounded background for logo
