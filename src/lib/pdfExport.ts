@@ -17,12 +17,15 @@ function preloadLogo() {
   const img = new Image();
   img.crossOrigin = "anonymous";
   img.onload = () => {
+    const scale = 4; // Higher resolution for crisp PDF rendering
     const canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
+    canvas.width = img.width * scale;
+    canvas.height = img.height * scale;
     const ctx = canvas.getContext("2d");
     if (ctx) {
-      ctx.drawImage(img, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       logoDataUrl = canvas.toDataURL("image/png");
     }
   };
