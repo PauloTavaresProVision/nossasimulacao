@@ -221,8 +221,8 @@ export function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: Result
   y = addRow(doc, "Número de Filhos", dados.numFilhos.toString(), y);
   y = addRow(doc, "Pai", dados.temPai ? "Sim" : "Não", y);
   y = addRow(doc, "Mãe", dados.temMae ? "Sim" : "Não", y);
-  y = addRow(doc, "Subsídio de Morte", `×${dados.multiplicadorSubsidioMorte}`, y);
-  y = addRow(doc, "Subsídio de Despesa de Funeral", `×${dados.multiplicadorFuneral}`, y);
+  y = addRow(doc, "Subsídio por Morte", `×${dados.multiplicadorSubsidioMorte}`, y);
+  y = addRow(doc, "Despesa de Funeral", `×${dados.multiplicadorFuneral}`, y);
 
   y += 5;
 
@@ -248,8 +248,8 @@ export function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: Result
 
   y = addRow(doc, "Pensão Mensal Total", formatCurrency(resultados.pensaoMensalTotal), y, true);
   y += 3;
-  y = addRow(doc, `Subsídio de Morte (×${dados.multiplicadorSubsidioMorte})`, formatCurrency(resultados.subsidioMorte), y);
-  y = addRow(doc, `Subsídio de Despesa de Funeral (×${dados.multiplicadorFuneral})`, formatCurrency(resultados.subsidioFuneral), y);
+  y = addRow(doc, `Subsídio por Morte (×${dados.multiplicadorSubsidioMorte})`, formatCurrency(resultados.subsidioMorte), y);
+  y = addRow(doc, `Despesa de Funeral (×${dados.multiplicadorFuneral})`, formatCurrency(resultados.subsidioFuneral), y);
   y = addRow(doc, "Total Indemnização (Pensão + Subsídios)", formatCurrency(resultados.totalIndemnizacao), y, true);
 
   addFooter(doc);
