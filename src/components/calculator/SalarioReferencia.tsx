@@ -55,27 +55,30 @@ export function SalarioReferencia({
             id="nomeSinistrado"
             type="text"
             value={nomeSinistrado}
-            onChange={(e) => setNomeSinistrado(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value.replace(/[0-9]/g, "");
+              setNomeSinistrado(value);
+            }}
             placeholder="Introduza o nome"
             className="input-styled"
           />
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="salarioBase" className="text-sm font-medium">
             Salário Base Mensal (KZ)
           </Label>
           <Input
             id="salarioBase"
-            type="number"
-            min={0}
-            step={1}
-            value={salarioBaseMensal || ""}
-            onChange={(e) =>
-              setSalarioBaseMensal(Math.max(0, Number(e.target.value)))
-            }
+            type="text"
+            inputMode="numeric"
+            value={salarioBaseMensal ? new Intl.NumberFormat("pt-AO").format(salarioBaseMensal) : ""}
+            onChange={(e) => {
+              const raw = e.target.value.replace(/[^\d]/g, "");
+              setSalarioBaseMensal(raw ? Number(raw) : 0);
+            }}
             placeholder="0"
             className="input-styled"
           />
@@ -87,13 +90,13 @@ export function SalarioReferencia({
           </Label>
           <Input
             id="subsidioFixo"
-            type="number"
-            min={0}
-            step={1}
-            value={subsidioFixoMensal || ""}
-            onChange={(e) =>
-              setSubsidioFixoMensal(Math.max(0, Number(e.target.value)))
-            }
+            type="text"
+            inputMode="numeric"
+            value={subsidioFixoMensal ? new Intl.NumberFormat("pt-AO").format(subsidioFixoMensal) : ""}
+            onChange={(e) => {
+              const raw = e.target.value.replace(/[^\d]/g, "");
+              setSubsidioFixoMensal(raw ? Number(raw) : 0);
+            }}
             placeholder="0"
             className="input-styled"
           />
