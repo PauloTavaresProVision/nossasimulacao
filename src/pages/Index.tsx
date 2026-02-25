@@ -37,12 +37,6 @@ const Index = () => {
                 className="h-12 md:h-14 w-auto"
               />
             </div>
-            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-5 py-2">
-              <div className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
-              <span className="text-primary-foreground/90 text-sm font-medium">
-                Simulador de Compensações AT
-              </span>
-            </div>
           </div>
         </div>
 
@@ -66,11 +60,11 @@ const Index = () => {
               </div>
               <div className="hidden md:flex items-center gap-2">
                 <Clock className="h-4 w-4" />
-                <span>Incapacidade Temporária</span>
+                <span>Incapacidade Temporária Absoluta</span>
               </div>
               <div className="hidden md:flex items-center gap-2">
                 <Activity className="h-4 w-4" />
-                <span>Pensão por IPP</span>
+                <span>Incapacidade Permanente Parcial</span>
               </div>
             </div>
           </div>
@@ -101,7 +95,7 @@ const Index = () => {
               }`}
             >
               <Clock className="h-5 w-5" />
-              <span>ITA (Incapacidade Temporária)</span>
+              <span>Incapacidade Temporária Absoluta (ITA)</span>
             </TabsTrigger>
             <TabsTrigger
               value="ipp"
@@ -112,7 +106,7 @@ const Index = () => {
               }`}
             >
               <Activity className="h-5 w-5" />
-              <span>Pensão por IPP</span>
+              <span>Incapacidade Permanente Parcial (IPP)</span>
             </TabsTrigger>
           </TabsList>
 
