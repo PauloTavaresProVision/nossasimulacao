@@ -68,7 +68,7 @@ export function SalarioReferencia({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="salarioBase" className="text-sm font-medium">
-            Salário Base Mensal
+            Salário Base Mensal (Kz)
           </Label>
           <Input
             id="salarioBase"
@@ -86,7 +86,7 @@ export function SalarioReferencia({
 
         <div className="space-y-2">
           <Label htmlFor="subsidioFixo" className="text-sm font-medium">
-            Subsídio Fixo Mensal
+            Subsídio Fixo Mensal (Kz)
           </Label>
           <Input
             id="subsidioFixo"
