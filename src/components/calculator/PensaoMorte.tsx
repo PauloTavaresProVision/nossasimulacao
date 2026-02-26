@@ -227,7 +227,7 @@ export function PensaoMorte() {
 
           {/* Ascendentes */}
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Ascendente (10% cada)</Label>
+            <Label className="text-sm font-medium">Ascendente</Label>
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Tem Pai?</Label>
