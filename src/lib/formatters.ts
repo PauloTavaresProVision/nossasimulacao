@@ -2,7 +2,7 @@ export function formatCurrency(value: number): string {
   return new Intl.NumberFormat("pt-AO", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(value) + " KZ";
+  }).format(value) + " Kz";
 }
 
 export function formatDate(dateString: string): string {
