@@ -101,7 +101,7 @@ export function IPPCalculator() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Label className="text-sm font-medium">Pensão IPP</Label>
+                <Label className="text-sm font-medium">Grau de Incapacidade indicada pelo Médico</Label>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
@@ -173,7 +173,7 @@ export function IPPCalculator() {
                 <p className="text-lg font-semibold text-foreground">70%</p>
               </div>
               <div className="bg-card p-4 rounded-lg border border-border">
-                <p className="text-sm text-muted-foreground">Pensão IPP</p>
+                <p className="text-sm text-muted-foreground">Grau de Incapacidade indicada pelo Médico</p>
                 <p className="text-lg font-semibold text-foreground">{ippMedico} / 100</p>
               </div>
             </div>
