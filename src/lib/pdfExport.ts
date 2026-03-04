@@ -161,13 +161,25 @@ function addFooter(doc: jsPDF) {
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
   
-  // Phone
+  // Phone icon (simple handset shape)
+  doc.setDrawColor(255, 255, 255);
+  doc.setLineWidth(0.5);
+  doc.circle(44, pageHeight - 18, 3);
+  doc.setFillColor(255, 255, 255);
+  doc.setFontSize(12);
+  doc.text("\u260E", 41.5, pageHeight - 15.5);
+  
+  doc.setFontSize(9);
   doc.text("Contact Center", 50, pageHeight - 20);
   doc.setFont("helvetica", "normal");
   doc.text(CONTACT_PHONE, 50, pageHeight - 14);
 
-  // Email
+  // Email icon
   doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.text("\u2709", 121.5, pageHeight - 15.5);
+  
+  doc.setFontSize(9);
   doc.text("E-mail", 130, pageHeight - 20);
   doc.setFont("helvetica", "normal");
   doc.text(CONTACT_EMAIL, 130, pageHeight - 14);
@@ -212,7 +224,7 @@ export function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: Result
 
   // Dados de Entrada
   y = addSection(doc, "Dados de Entrada", y);
-  y = addRow(doc, "Falecido", dados.nomeSinistrado || "—", y);
+  y = addRow(doc, "Sinistrado", dados.nomeSinistrado || "—", y);
   y = addRow(doc, "Salário Base Mensal", formatCurrency(dados.salarioBaseMensal), y);
   y = addRow(doc, "Subsídio Fixo Mensal", formatCurrency(dados.subsidioFixoMensal), y);
   y = addRow(doc, "Nº Salários/Ano", dados.numSalariosAno.toString(), y);
