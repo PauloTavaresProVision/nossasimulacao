@@ -162,14 +162,21 @@ function addFooter(doc: jsPDF) {
   const iconY = pageHeight - 17;
   doc.setFillColor(255, 255, 255);
   doc.circle(phoneX, iconY, 5, "F");
-  // Phone handset inside circle
+  // Phone handset - classic receiver shape
   doc.setDrawColor(NOSSA_GREEN[0], NOSSA_GREEN[1], NOSSA_GREEN[2]);
   doc.setFillColor(NOSSA_GREEN[0], NOSSA_GREEN[1], NOSSA_GREEN[2]);
-  doc.setLineWidth(0.8);
-  // Receiver shape using lines
-  doc.roundedRect(phoneX - 2.5, iconY - 3, 2, 6, 0.8, 0.8, "F");
-  doc.roundedRect(phoneX + 0.5, iconY - 3, 2, 6, 0.8, 0.8, "F");
-  doc.roundedRect(phoneX - 2, iconY - 3, 4, 1.5, 0.5, 0.5, "F");
+  doc.setLineWidth(1.2);
+  // Earpiece (top-left rounded rect)
+  doc.roundedRect(phoneX - 3, iconY - 3, 2, 3, 0.6, 0.6, "F");
+  // Mouthpiece (bottom-right rounded rect)
+  doc.roundedRect(phoneX + 1, iconY, 2, 3, 0.6, 0.6, "F");
+  // Curved connector between ear and mouth
+  doc.setLineWidth(1);
+  doc.setLineCap("round");
+  // Draw arc using lines to simulate curve
+  doc.line(phoneX - 2, iconY - 0.5, phoneX - 1, iconY + 0.5);
+  doc.line(phoneX - 1, iconY + 0.5, phoneX + 0.5, iconY + 1);
+  doc.line(phoneX + 0.5, iconY + 1, phoneX + 2, iconY + 0.5);
 
   doc.setFontSize(9);
   doc.setTextColor(255, 255, 255);
