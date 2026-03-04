@@ -297,7 +297,7 @@ export function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: Result
   y = addRow(doc, "Pai", dados.temPai ? "Sim" : "Não", y);
   y = addRow(doc, "Mãe", dados.temMae ? "Sim" : "Não", y);
   y = addRow(doc, "Subsídio por Morte", `×${dados.multiplicadorSubsidioMorte}`, y);
-  y = addRow(doc, "Despesa de Funeral", `×${dados.multiplicadorFuneral}`, y);
+  y = addRow(doc, "Despesas de Funeral", `×${dados.multiplicadorFuneral}`, y);
 
   y += 3;
 
@@ -324,7 +324,7 @@ export function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: Result
   y = addRow(doc, "Pensão Mensal Total", formatCurrency(resultados.pensaoMensalTotal), y, true);
   y += 3;
   y = addRow(doc, "Subsídio por Morte", formatCurrency(resultados.subsidioMorte), y);
-  y = addRow(doc, "Despesa de Funeral", formatCurrency(resultados.subsidioFuneral), y);
+  y = addRow(doc, "Despesas de Funeral", formatCurrency(resultados.subsidioFuneral), y);
 
   addFooter(doc);
   doc.save("pensao-morte-nossa-seguros.pdf");
@@ -415,7 +415,7 @@ export function exportIPPPDF(dados: DadosIPP, resultados: ResultadosIPP) {
   y = addRow(doc, "Salário Base Mensal", formatCurrency(dados.salarioBaseMensal), y);
   y = addRow(doc, "Subsídio Fixo Mensal", formatCurrency(dados.subsidioFixoMensal), y);
   y = addRow(doc, "Nº Salários/Ano", dados.numSalariosAno.toString(), y);
-  y = addRow(doc, "Factor Decreto", "70% (fixo)", y);
+  y = addRow(doc, "Fator Decreto", "70% (fixo)", y);
   y = addRow(doc, "Grau de Incapacidade indicada pelo Médico", `${Math.round(dados.ippMedico * 100)} / 100`, y);
 
   y += 3;
