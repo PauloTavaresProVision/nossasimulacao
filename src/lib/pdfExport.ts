@@ -126,7 +126,7 @@ function addSection(doc: jsPDF, title: string, yPos: number): number {
   doc.setFont("helvetica", "bold");
   doc.text(title, 28, yPos + 6);
 
-  return yPos + 14;
+  return yPos + 12;
 }
 
 function addRow(doc: jsPDF, label: string, value: string, yPos: number, isHighlight = false): number {
@@ -146,7 +146,7 @@ function addRow(doc: jsPDF, label: string, value: string, yPos: number, isHighli
   doc.setFont("helvetica", "bold");
   doc.text(value, 170, yPos, { align: "right" });
 
-  return yPos + 10;
+  return yPos + 8;
 }
 
 function addFooter(doc: jsPDF) {
@@ -236,7 +236,7 @@ export function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: Result
   y = addRow(doc, "Subsídio por Morte", `×${dados.multiplicadorSubsidioMorte}`, y);
   y = addRow(doc, "Despesa de Funeral", `×${dados.multiplicadorFuneral}`, y);
 
-  y += 5;
+  y += 3;
 
   // Resultados
   y = addSection(doc, "Resultados", y);
@@ -308,7 +308,7 @@ export function exportITAPDF(dados: DadosITA, resultados: ResultadosITA) {
     y = addRow(doc, "Período Ambulatório", `${formatDate(dados.dataInicioAmbulatorio)} a ${formatDate(dados.dataFimAmbulatorio)}`, y);
   }
 
-  y += 5;
+  y += 3;
 
   // Resultados
   y = addSection(doc, "Resultados", y);
@@ -359,7 +359,7 @@ export function exportIPPPDF(dados: DadosIPP, resultados: ResultadosIPP) {
   y = addRow(doc, "Fator Decreto", "70% (fixo)", y);
   y = addRow(doc, "Pensão IPP", `${Math.round(dados.ippMedico * 100)} / 100`, y);
 
-  y += 5;
+  y += 3;
 
   // Resultados
   y = addSection(doc, "Resultados", y);
