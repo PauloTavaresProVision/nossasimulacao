@@ -157,31 +157,44 @@ function addFooter(doc: jsPDF) {
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
   
-  // Phone icon (drawn manually)
-  doc.setDrawColor(255, 255, 255);
+  // Phone icon - white circle with phone shape
+  const phoneX = 40;
+  const iconY = pageHeight - 17;
   doc.setFillColor(255, 255, 255);
-  doc.setLineWidth(0.6);
-  // Handset shape - simple rectangle with rounded ends
-  doc.roundedRect(42, pageHeight - 22, 4, 7, 1.5, 1.5, "S");
-  doc.line(42.5, pageHeight - 19.5, 45.5, pageHeight - 16.5);
-  
-  doc.setFontSize(9);
-  doc.text("Contact Center", 50, pageHeight - 20);
-  doc.setFont("helvetica", "normal");
-  doc.text(CONTACT_PHONE, 50, pageHeight - 14);
+  doc.circle(phoneX, iconY, 5, "F");
+  // Phone handset inside circle
+  doc.setDrawColor(NOSSA_GREEN[0], NOSSA_GREEN[1], NOSSA_GREEN[2]);
+  doc.setFillColor(NOSSA_GREEN[0], NOSSA_GREEN[1], NOSSA_GREEN[2]);
+  doc.setLineWidth(0.8);
+  // Receiver shape using lines
+  doc.roundedRect(phoneX - 2.5, iconY - 3, 2, 6, 0.8, 0.8, "F");
+  doc.roundedRect(phoneX + 0.5, iconY - 3, 2, 6, 0.8, 0.8, "F");
+  doc.roundedRect(phoneX - 2, iconY - 3, 4, 1.5, 0.5, 0.5, "F");
 
-  // Email icon (drawn manually - envelope shape)
-  doc.setFont("helvetica", "bold");
-  doc.setDrawColor(255, 255, 255);
-  doc.setLineWidth(0.5);
-  doc.rect(122, pageHeight - 22, 6, 4, "S");
-  doc.line(122, pageHeight - 22, 125, pageHeight - 19.5);
-  doc.line(128, pageHeight - 22, 125, pageHeight - 19.5);
-  
   doc.setFontSize(9);
-  doc.text("E-mail", 130, pageHeight - 20);
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.text("Contact Center", 48, pageHeight - 19);
   doc.setFont("helvetica", "normal");
-  doc.text(CONTACT_EMAIL, 130, pageHeight - 14);
+  doc.text(CONTACT_PHONE, 48, pageHeight - 13);
+
+  // Email icon - white circle with envelope
+  const emailX = 120;
+  doc.setFillColor(255, 255, 255);
+  doc.circle(emailX, iconY, 5, "F");
+  // Envelope shape
+  doc.setDrawColor(NOSSA_GREEN[0], NOSSA_GREEN[1], NOSSA_GREEN[2]);
+  doc.setFillColor(NOSSA_GREEN[0], NOSSA_GREEN[1], NOSSA_GREEN[2]);
+  doc.rect(emailX - 3, iconY - 2, 6, 4, "S");
+  doc.setLineWidth(0.6);
+  doc.line(emailX - 3, iconY - 2, emailX, iconY + 0.5);
+  doc.line(emailX + 3, iconY - 2, emailX, iconY + 0.5);
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.text("E-mail", 128, pageHeight - 19);
+  doc.setFont("helvetica", "normal");
+  doc.text(CONTACT_EMAIL, 128, pageHeight - 13);
 
   // Disclaimer
   doc.setFontSize(7);
