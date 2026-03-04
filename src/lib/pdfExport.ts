@@ -107,11 +107,7 @@ function getMaxContentY(doc: jsPDF): number {
 }
 
 function checkPageBreak(doc: jsPDF, currentY: number, neededSpace: number = 15): number {
-  const maxY = getMaxContentY(doc);
-  if (currentY + neededSpace > maxY) {
-    doc.addPage();
-    return 50; // Reset Y position for new page
-  }
+  // Force single page - no page breaks
   return currentY;
 }
 
@@ -243,26 +239,25 @@ export function exportPensaoMortePDF(dados: DadosPensaoMorte, resultados: Result
   y = addRow(doc, "Remuneração de Referência", formatCurrency(resultados.referenciaAnual), y, true);
 
   if (resultados.valorConjuge > 0) {
-    y = addRow(doc, `Cônjuge (${dados.conjugeIdadeReforma ? "40%" : "30%"})`, formatCurrency(resultados.valorConjuge), y);
+    y = addRow(doc, "Cônjuge", formatCurrency(resultados.valorConjuge), y);
   }
   if (resultados.valorExConjuge > 0) {
-    y = addRow(doc, `Ex-Cônjuge (${dados.exConjugeIdadeReforma ? "40%" : "30%"})`, formatCurrency(resultados.valorExConjuge), y);
+    y = addRow(doc, "Ex-Cônjuge", formatCurrency(resultados.valorExConjuge), y);
   }
   if (resultados.valorFilhos > 0) {
     y = addRow(doc, `Filhos (${dados.numFilhos})`, formatCurrency(resultados.valorFilhos), y);
   }
   if (resultados.valorPai > 0) {
-    y = addRow(doc, "Pai (10%)", formatCurrency(resultados.valorPai), y);
+    y = addRow(doc, "Pai", formatCurrency(resultados.valorPai), y);
   }
   if (resultados.valorMae > 0) {
-    y = addRow(doc, "Mãe (10%)", formatCurrency(resultados.valorMae), y);
+    y = addRow(doc, "Mãe", formatCurrency(resultados.valorMae), y);
   }
 
   y = addRow(doc, "Pensão Mensal Total", formatCurrency(resultados.pensaoMensalTotal), y, true);
   y += 3;
-  y = addRow(doc, `Subsídio por Morte (×${dados.multiplicadorSubsidioMorte})`, formatCurrency(resultados.subsidioMorte), y);
-  y = addRow(doc, `Despesa de Funeral (×${dados.multiplicadorFuneral})`, formatCurrency(resultados.subsidioFuneral), y);
-  y = addRow(doc, "Total Indemnização (Pensão + Subsídios)", formatCurrency(resultados.totalIndemnizacao), y, true);
+  y = addRow(doc, "Subsídio por Morte", formatCurrency(resultados.subsidioMorte), y);
+  y = addRow(doc, "Despesa de Funeral", formatCurrency(resultados.subsidioFuneral), y);
 
   addFooter(doc);
   doc.save("pensao-morte-nossa-seguros.pdf");
@@ -322,11 +317,8 @@ export function exportITAPDF(dados: DadosITA, resultados: ResultadosITA) {
 
   if (resultados.diasAmbulatorio > 0) {
     y = addRow(doc, "Dias de Ambulatório", `${resultados.diasAmbulatorio} dias`, y);
-    y = addRow(doc, "Indemnização Ambulatório (65%)", formatCurrency(resultados.indemnAmbulatorio), y);
+    y = addRow(doc, "Indemnização Ambulatório", formatCurrency(resultados.indemnAmbulatorio), y);
   }
-
-  y = addRow(doc, "Total de Dias", `${resultados.totalDias} dias`, y, true);
-  y = addRow(doc, "Total Indemnização ITA", formatCurrency(resultados.totalIndemnizacao), y, true);
 
   addFooter(doc);
   doc.save("ita-nossa-seguros.pdf");
@@ -352,12 +344,12 @@ export function exportIPPPDF(dados: DadosIPP, resultados: ResultadosIPP) {
 
   // Dados de Entrada
   y = addSection(doc, "Dados de Entrada", y);
-  y = addRow(doc, "Pensionista", dados.nomeSinistrado || "—", y);
+  y = addRow(doc, "Sinistrado", dados.nomeSinistrado || "—", y);
   y = addRow(doc, "Salário Base Mensal", formatCurrency(dados.salarioBaseMensal), y);
   y = addRow(doc, "Subsídio Fixo Mensal", formatCurrency(dados.subsidioFixoMensal), y);
   y = addRow(doc, "Nº Salários/Ano", dados.numSalariosAno.toString(), y);
-  y = addRow(doc, "Fator Decreto", "70% (fixo)", y);
-  y = addRow(doc, "Pensão IPP", `${Math.round(dados.ippMedico * 100)} / 100`, y);
+  y = addRow(doc, "Factor Decreto", "70% (fixo)", y);
+  y = addRow(doc, "Grau de Incapacidade indicada pelo Médico", `${Math.round(dados.ippMedico * 100)} / 100`, y);
 
   y += 3;
 
