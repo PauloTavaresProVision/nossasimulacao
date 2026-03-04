@@ -320,7 +320,7 @@ export function PensaoMorte() {
           <h3 className="text-lg font-semibold text-foreground mb-4">Resultados</h3>
 
           <div className="space-y-4">
-            <div className="result-highlight">
+            <div className="result-highlight-blue">
               <p className="text-sm text-muted-foreground">Remuneração de Referência</p>
               <p className="text-xl font-bold text-foreground">{formatCurrency(resultados.referenciaAnual)}</p>
             </div>
@@ -328,13 +328,13 @@ export function PensaoMorte() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {resultados.valorConjuge > 0 && (
                 <div className="bg-card p-4 rounded-lg border border-border">
-                  <p className="text-sm text-muted-foreground">Cônjuge {conjugeIdadeReforma ? "(40%)" : "(30%)"}</p>
+                  <p className="text-sm text-muted-foreground">Cônjuge</p>
                   <p className="text-lg font-semibold text-foreground">{formatCurrency(resultados.valorConjuge)}</p>
                 </div>
               )}
               {resultados.valorExConjuge > 0 && (
                 <div className="bg-card p-4 rounded-lg border border-border">
-                  <p className="text-sm text-muted-foreground">Ex-Cônjuge {exConjugeIdadeReforma ? "(40%)" : "(30%)"}</p>
+                  <p className="text-sm text-muted-foreground">Ex-Cônjuge</p>
                   <p className="text-lg font-semibold text-foreground">{formatCurrency(resultados.valorExConjuge)}</p>
                 </div>
               )}
@@ -346,13 +346,13 @@ export function PensaoMorte() {
               )}
               {resultados.valorPai > 0 && (
                 <div className="bg-card p-4 rounded-lg border border-border">
-                  <p className="text-sm text-muted-foreground">Pai (10%)</p>
+                  <p className="text-sm text-muted-foreground">Pai</p>
                   <p className="text-lg font-semibold text-foreground">{formatCurrency(resultados.valorPai)}</p>
                 </div>
               )}
               {resultados.valorMae > 0 && (
                 <div className="bg-card p-4 rounded-lg border border-border">
-                  <p className="text-sm text-muted-foreground">Mãe (10%)</p>
+                  <p className="text-sm text-muted-foreground">Mãe</p>
                   <p className="text-lg font-semibold text-foreground">{formatCurrency(resultados.valorMae)}</p>
                 </div>
               )}
@@ -365,18 +365,13 @@ export function PensaoMorte() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-card p-4 rounded-lg border border-border">
-                <p className="text-sm text-muted-foreground">Subsídio por Morte (×{multiplicadorSubsidioMorte})</p>
+                <p className="text-sm text-muted-foreground">Subsídio por Morte</p>
                 <p className="text-lg font-semibold text-foreground">{formatCurrency(resultados.subsidioMorte)}</p>
               </div>
               <div className="bg-card p-4 rounded-lg border border-border">
-                <p className="text-sm text-muted-foreground">Despesa de Funeral (×{multiplicadorFuneral})</p>
+                <p className="text-sm text-muted-foreground">Despesa de Funeral</p>
                 <p className="text-lg font-semibold text-foreground">{formatCurrency(resultados.subsidioFuneral)}</p>
               </div>
-            </div>
-
-            <div className="result-highlight bg-gradient-to-r from-primary/10 to-primary/5 border-l-primary">
-              <p className="text-sm text-muted-foreground">Total Indemnização (Pensão + Subsídios)</p>
-              <p className="text-2xl font-bold text-primary">{formatCurrency(resultados.totalIndemnizacao)}</p>
             </div>
           </div>
         </div>

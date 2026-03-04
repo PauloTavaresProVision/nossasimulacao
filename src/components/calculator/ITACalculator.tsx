@@ -245,12 +245,12 @@ export function ITACalculator() {
 
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="result-highlight">
+              <div className="result-highlight-blue">
                 <p className="text-sm text-muted-foreground">Remuneração de Referência</p>
                 <p className="text-xl font-bold text-foreground">{formatCurrency(resultados.referenciaAnual)}</p>
               </div>
-              <div className="result-highlight">
-                <p className="text-sm text-muted-foreground">Remuneração Diária (Ref ÷ 30)</p>
+              <div className="result-highlight-blue">
+                <p className="text-sm text-muted-foreground">Remuneração Diária</p>
                 <p className="text-xl font-bold text-foreground">{formatCurrency(resultados.remuneracaoDiaria)}</p>
               </div>
             </div>
@@ -265,21 +265,8 @@ export function ITACalculator() {
               <div className="bg-card p-4 rounded-lg border border-border">
                 <p className="text-sm text-muted-foreground">Dias de Ambulatório</p>
                 <p className="text-lg font-semibold text-foreground">{resultados.diasAmbulatorio} dias</p>
-                <p className="text-sm text-muted-foreground mt-1">Indemnização (65%):</p>
+                <p className="text-sm text-muted-foreground mt-1">Indemnização:</p>
                 <p className="text-lg font-semibold text-nossa-green">{formatCurrency(resultados.indemnAmbulatorio)}</p>
-              </div>
-            </div>
-
-            <div className="result-highlight bg-gradient-to-r from-primary/10 to-primary/5 border-l-primary">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-sm text-muted-foreground">Total de Dias</p>
-                  <p className="text-lg font-semibold text-foreground">{resultados.totalDias} dias</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-muted-foreground">Total Indemnização ITA</p>
-                  <p className="text-2xl font-bold text-primary">{formatCurrency(resultados.totalIndemnizacao)}</p>
-                </div>
               </div>
             </div>
           </div>

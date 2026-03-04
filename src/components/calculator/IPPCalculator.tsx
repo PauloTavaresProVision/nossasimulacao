@@ -162,7 +162,7 @@ export function IPPCalculator() {
           <h3 className="text-lg font-semibold text-foreground mb-4">Resultados</h3>
 
           <div className="space-y-4">
-            <div className="result-highlight">
+            <div className="result-highlight-blue">
               <p className="text-sm text-muted-foreground">Remuneração de Referência</p>
               <p className="text-xl font-bold text-foreground">{formatCurrency(resultados.referenciaAnual)}</p>
             </div>
