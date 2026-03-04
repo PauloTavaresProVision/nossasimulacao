@@ -157,23 +157,26 @@ function addFooter(doc: jsPDF) {
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
   
-  // Phone icon (simple handset shape)
+  // Phone icon (drawn manually)
   doc.setDrawColor(255, 255, 255);
-  doc.setLineWidth(0.5);
-  doc.circle(44, pageHeight - 18, 3);
   doc.setFillColor(255, 255, 255);
-  doc.setFontSize(12);
-  doc.text("\u260E", 41.5, pageHeight - 15.5);
+  doc.setLineWidth(0.6);
+  // Handset shape - simple rectangle with rounded ends
+  doc.roundedRect(42, pageHeight - 22, 4, 7, 1.5, 1.5, "S");
+  doc.line(42.5, pageHeight - 19.5, 45.5, pageHeight - 16.5);
   
   doc.setFontSize(9);
   doc.text("Contact Center", 50, pageHeight - 20);
   doc.setFont("helvetica", "normal");
   doc.text(CONTACT_PHONE, 50, pageHeight - 14);
 
-  // Email icon
+  // Email icon (drawn manually - envelope shape)
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
-  doc.text("\u2709", 121.5, pageHeight - 15.5);
+  doc.setDrawColor(255, 255, 255);
+  doc.setLineWidth(0.5);
+  doc.rect(122, pageHeight - 22, 6, 4, "S");
+  doc.line(122, pageHeight - 22, 125, pageHeight - 19.5);
+  doc.line(128, pageHeight - 22, 125, pageHeight - 19.5);
   
   doc.setFontSize(9);
   doc.text("E-mail", 130, pageHeight - 20);
