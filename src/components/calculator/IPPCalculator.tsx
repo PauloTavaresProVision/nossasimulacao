@@ -78,13 +78,13 @@ export function IPPCalculator() {
 
       {/* Fatores IPP */}
       <div className="card-elevated p-6 mb-6">
-        <h3 className="text-lg font-semibold text-foreground mb-6">Fatores de Cálculo</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-6">Factores de Cálculo</h3>
 
         <div className="space-y-6">
           {/* Decreto fixo - apenas informativo */}
           <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
             <div className="flex items-center gap-2">
-              <Label className="text-sm font-medium">Fator Decreto</Label>
+              <Label className="text-sm font-medium">Factor Decreto</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />

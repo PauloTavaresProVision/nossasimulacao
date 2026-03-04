@@ -415,7 +415,7 @@ export function exportIPPPDF(dados: DadosIPP, resultados: ResultadosIPP) {
   y = addRow(doc, "Salário Base Mensal", formatCurrency(dados.salarioBaseMensal), y);
   y = addRow(doc, "Subsídio Fixo Mensal", formatCurrency(dados.subsidioFixoMensal), y);
   y = addRow(doc, "Nº Salários/Ano", dados.numSalariosAno.toString(), y);
-  y = addRow(doc, "Fator Decreto", "70% (fixo)", y);
+  y = addRow(doc, "Factor Decreto", "70% (fixo)", y);
   y = addRow(doc, "Grau de Incapacidade indicada pelo Médico", `${Math.round(dados.ippMedico * 100)} / 100`, y);
 
   y += 3;
