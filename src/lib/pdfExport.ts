@@ -1,6 +1,7 @@
 import jsPDF from "jspdf";
 import { formatCurrency, formatDate, formatDateTime, formatPercentage } from "./formatters";
 import logoNossa from "@/assets/logo-nossa-seguros.png";
+import phoneIconSrc from "@/assets/phone-icon.png";
 
 const NOSSA_BLUE = [30, 58, 95];
 const NOSSA_GREEN = [165, 201, 0];
@@ -39,43 +40,48 @@ function preloadLogo() {
   img.src = logoNossa;
 }
 
-function createContactIcons() {
-  const size = 64;
+function preloadPhoneIcon() {
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      // White circle background
+      ctx.fillStyle = "#FFFFFF";
+      ctx.beginPath();
+      ctx.arc(64, 64, 64, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw phone icon (green tint) centered with padding
+      const padding = 24;
+      const drawSize = 128 - padding * 2;
+      
+      // Create temp canvas to tint the icon green
+      const tintCanvas = document.createElement("canvas");
+      tintCanvas.width = 128;
+      tintCanvas.height = 128;
+      const tintCtx = tintCanvas.getContext("2d");
+      if (tintCtx) {
+        tintCtx.drawImage(img, padding, padding, drawSize, drawSize);
+        tintCtx.globalCompositeOperation = "source-in";
+        tintCtx.fillStyle = `rgb(${NOSSA_GREEN[0]}, ${NOSSA_GREEN[1]}, ${NOSSA_GREEN[2]})`;
+        tintCtx.fillRect(0, 0, 128, 128);
+        ctx.drawImage(tintCanvas, 0, 0);
+      }
+
+      phoneIconDataUrl = canvas.toDataURL("image/png");
+    }
+  };
+  img.src = phoneIconSrc;
+}
+
+function createEmailIcon() {
+  const size = 128;
   const green = `rgb(${NOSSA_GREEN[0]}, ${NOSSA_GREEN[1]}, ${NOSSA_GREEN[2]})`;
 
-  // Phone icon
-  const phoneCanvas = document.createElement("canvas");
-  phoneCanvas.width = size;
-  phoneCanvas.height = size;
-  const phoneCtx = phoneCanvas.getContext("2d");
-  if (phoneCtx) {
-    phoneCtx.fillStyle = "#FFFFFF";
-    phoneCtx.beginPath();
-    phoneCtx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-    phoneCtx.fill();
-
-    phoneCtx.strokeStyle = green;
-    phoneCtx.fillStyle = green;
-    phoneCtx.lineWidth = 5;
-    phoneCtx.lineCap = "round";
-    phoneCtx.lineJoin = "round";
-
-    phoneCtx.beginPath();
-    phoneCtx.moveTo(21, 20);
-    phoneCtx.quadraticCurveTo(16, 25, 20, 32);
-    phoneCtx.lineTo(28, 40);
-    phoneCtx.quadraticCurveTo(35, 46, 42, 41);
-    phoneCtx.stroke();
-
-    phoneCtx.beginPath();
-    phoneCtx.arc(21, 20, 2.8, 0, Math.PI * 2);
-    phoneCtx.arc(42, 41, 2.8, 0, Math.PI * 2);
-    phoneCtx.fill();
-
-    phoneIconDataUrl = phoneCanvas.toDataURL("image/png");
-  }
-
-  // Email icon
   const emailCanvas = document.createElement("canvas");
   emailCanvas.width = size;
   emailCanvas.height = size;
@@ -87,14 +93,14 @@ function createContactIcons() {
     emailCtx.fill();
 
     emailCtx.strokeStyle = green;
-    emailCtx.lineWidth = 4;
+    emailCtx.lineWidth = 6;
     emailCtx.lineJoin = "round";
 
-    emailCtx.strokeRect(17, 21, 30, 22);
+    emailCtx.strokeRect(30, 38, 68, 52);
     emailCtx.beginPath();
-    emailCtx.moveTo(17, 21);
-    emailCtx.lineTo(32, 33);
-    emailCtx.lineTo(47, 21);
+    emailCtx.moveTo(30, 38);
+    emailCtx.lineTo(64, 68);
+    emailCtx.lineTo(98, 38);
     emailCtx.stroke();
 
     emailIconDataUrl = emailCanvas.toDataURL("image/png");
@@ -103,7 +109,8 @@ function createContactIcons() {
 
 // Start preloading immediately
 preloadLogo();
-createContactIcons();
+preloadPhoneIcon();
+createEmailIcon();
 
 function setupDocument(title: string): jsPDF {
   const doc = new jsPDF({
