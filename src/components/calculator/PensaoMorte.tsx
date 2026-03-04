@@ -272,7 +272,7 @@ export function PensaoMorte() {
 
           <div className="space-y-2">
             <div className="flex items-center gap-1">
-              <Label className="text-sm font-medium">Despesa de Funeral</Label>
+              <Label className="text-sm font-medium">Despesas de Funeral</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -369,7 +369,7 @@ export function PensaoMorte() {
                 <p className="text-lg font-semibold text-foreground">{formatCurrency(resultados.subsidioMorte)}</p>
               </div>
               <div className="bg-card p-4 rounded-lg border border-border">
-                <p className="text-sm text-muted-foreground">Despesa de Funeral</p>
+                <p className="text-sm text-muted-foreground">Despesas de Funeral</p>
                 <p className="text-lg font-semibold text-foreground">{formatCurrency(resultados.subsidioFuneral)}</p>
               </div>
             </div>
