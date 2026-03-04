@@ -9,8 +9,11 @@ const NOSSA_GREEN = [165, 201, 0];
 const CONTACT_PHONE = "+244 923 190 860";
 const CONTACT_EMAIL = "apoioaocliente@nossaseguros.ao";
 
-// Pre-loaded logo data
+// Pre-loaded assets
 let logoDataUrl: string | null = null;
+let phoneIconDataUrl: string | null = null;
+let emailIconDataUrl: string | null = null;
+let logoAspectRatio = 2.5;
 
 // Preload logo on module load
 function preloadLogo() {
@@ -36,10 +39,71 @@ function preloadLogo() {
   img.src = logoNossa;
 }
 
-let logoAspectRatio = 2.5;
+function createContactIcons() {
+  const size = 64;
+  const green = `rgb(${NOSSA_GREEN[0]}, ${NOSSA_GREEN[1]}, ${NOSSA_GREEN[2]})`;
+
+  // Phone icon
+  const phoneCanvas = document.createElement("canvas");
+  phoneCanvas.width = size;
+  phoneCanvas.height = size;
+  const phoneCtx = phoneCanvas.getContext("2d");
+  if (phoneCtx) {
+    phoneCtx.fillStyle = "#FFFFFF";
+    phoneCtx.beginPath();
+    phoneCtx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+    phoneCtx.fill();
+
+    phoneCtx.strokeStyle = green;
+    phoneCtx.fillStyle = green;
+    phoneCtx.lineWidth = 5;
+    phoneCtx.lineCap = "round";
+    phoneCtx.lineJoin = "round";
+
+    phoneCtx.beginPath();
+    phoneCtx.moveTo(21, 20);
+    phoneCtx.quadraticCurveTo(16, 25, 20, 32);
+    phoneCtx.lineTo(28, 40);
+    phoneCtx.quadraticCurveTo(35, 46, 42, 41);
+    phoneCtx.stroke();
+
+    phoneCtx.beginPath();
+    phoneCtx.arc(21, 20, 2.8, 0, Math.PI * 2);
+    phoneCtx.arc(42, 41, 2.8, 0, Math.PI * 2);
+    phoneCtx.fill();
+
+    phoneIconDataUrl = phoneCanvas.toDataURL("image/png");
+  }
+
+  // Email icon
+  const emailCanvas = document.createElement("canvas");
+  emailCanvas.width = size;
+  emailCanvas.height = size;
+  const emailCtx = emailCanvas.getContext("2d");
+  if (emailCtx) {
+    emailCtx.fillStyle = "#FFFFFF";
+    emailCtx.beginPath();
+    emailCtx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+    emailCtx.fill();
+
+    emailCtx.strokeStyle = green;
+    emailCtx.lineWidth = 4;
+    emailCtx.lineJoin = "round";
+
+    emailCtx.strokeRect(17, 21, 30, 22);
+    emailCtx.beginPath();
+    emailCtx.moveTo(17, 21);
+    emailCtx.lineTo(32, 33);
+    emailCtx.lineTo(47, 21);
+    emailCtx.stroke();
+
+    emailIconDataUrl = emailCanvas.toDataURL("image/png");
+  }
+}
 
 // Start preloading immediately
 preloadLogo();
+createContactIcons();
 
 function setupDocument(title: string): jsPDF {
   const doc = new jsPDF({
@@ -154,54 +218,37 @@ function addFooter(doc: jsPDF) {
 
   // Contact information
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(9);
-  doc.setFont("helvetica", "bold");
-  
-  // Phone icon - white circle with phone shape
-  const phoneX = 40;
-  const iconY = pageHeight - 17;
-  doc.setFillColor(255, 255, 255);
-  doc.circle(phoneX, iconY, 5, "F");
-  // Phone handset - classic receiver shape
-  doc.setDrawColor(NOSSA_GREEN[0], NOSSA_GREEN[1], NOSSA_GREEN[2]);
-  doc.setFillColor(NOSSA_GREEN[0], NOSSA_GREEN[1], NOSSA_GREEN[2]);
-  doc.setLineWidth(1.2);
-  // Earpiece (top-left rounded rect)
-  doc.roundedRect(phoneX - 3, iconY - 3, 2, 3, 0.6, 0.6, "F");
-  // Mouthpiece (bottom-right rounded rect)
-  doc.roundedRect(phoneX + 1, iconY, 2, 3, 0.6, 0.6, "F");
-  // Curved connector between ear and mouth
-  doc.setLineWidth(1);
-  doc.setLineCap("round");
-  // Draw arc using lines to simulate curve
-  doc.line(phoneX - 2, iconY - 0.5, phoneX - 1, iconY + 0.5);
-  doc.line(phoneX - 1, iconY + 0.5, phoneX + 0.5, iconY + 1);
-  doc.line(phoneX + 0.5, iconY + 1, phoneX + 2, iconY + 0.5);
 
-  doc.setFontSize(9);
-  doc.setTextColor(255, 255, 255);
+  const iconSize = 10;
+  const iconY = pageHeight - 23;
+  const phoneIconX = 30;
+  const emailIconX = 112;
+
+  if (phoneIconDataUrl) {
+    try {
+      doc.addImage(phoneIconDataUrl, "PNG", phoneIconX, iconY, iconSize, iconSize);
+    } catch (e) {
+      console.error("Error adding phone icon:", e);
+    }
+  }
+
+  if (emailIconDataUrl) {
+    try {
+      doc.addImage(emailIconDataUrl, "PNG", emailIconX, iconY, iconSize, iconSize);
+    } catch (e) {
+      console.error("Error adding email icon:", e);
+    }
+  }
+
   doc.setFont("helvetica", "bold");
-  doc.text("Contact Center", 48, pageHeight - 19);
+  doc.setFontSize(10);
+  doc.text("Contact Center", 44, pageHeight - 19);
+  doc.text("E-mail", 126, pageHeight - 19);
+
   doc.setFont("helvetica", "normal");
-  doc.text(CONTACT_PHONE, 48, pageHeight - 13);
-
-  // Email icon - white circle with envelope
-  const emailX = 120;
-  doc.setFillColor(255, 255, 255);
-  doc.circle(emailX, iconY, 5, "F");
-  // Envelope shape
-  doc.setDrawColor(NOSSA_GREEN[0], NOSSA_GREEN[1], NOSSA_GREEN[2]);
-  doc.setFillColor(NOSSA_GREEN[0], NOSSA_GREEN[1], NOSSA_GREEN[2]);
-  doc.rect(emailX - 3, iconY - 2, 6, 4, "S");
-  doc.setLineWidth(0.6);
-  doc.line(emailX - 3, iconY - 2, emailX, iconY + 0.5);
-  doc.line(emailX + 3, iconY - 2, emailX, iconY + 0.5);
-
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.text("E-mail", 128, pageHeight - 19);
-  doc.setFont("helvetica", "normal");
-  doc.text(CONTACT_EMAIL, 128, pageHeight - 13);
+  doc.setFontSize(11);
+  doc.text(CONTACT_PHONE, 44, pageHeight - 13);
+  doc.text(CONTACT_EMAIL, 126, pageHeight - 13);
 
   // Disclaimer
   doc.setFontSize(7);
