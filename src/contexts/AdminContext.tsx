@@ -50,15 +50,26 @@ interface AdminContextType {
   factors: CalculationFactors;
   updateFactor: (key: keyof CalculationFactors, value: number) => void;
   resetFactors: () => void;
+  // Site access
+  isSiteAuthenticated: boolean;
+  siteLogin: (password: string) => boolean;
+  siteLogout: () => void;
+  changeSitePassword: (currentPassword: string, newPassword: string) => boolean;
 }
 
 const AdminContext = createContext<AdminContextType | null>(null);
 
 const ADMIN_PASSWORD = "Admin2026";
 const FACTORS_STORAGE_KEY = "nossa-seguros-factors";
+const SITE_PASSWORD_KEY = "nossa-seguros-site-password";
+const SITE_AUTH_KEY = "nossa-seguros-site-auth";
+const DEFAULT_SITE_PASSWORD = "Nossa2026";
 
 export function AdminProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSiteAuthenticated, setIsSiteAuthenticated] = useState(() => {
+    return sessionStorage.getItem(SITE_AUTH_KEY) === "true";
+  });
   const [factors, setFactors] = useState<CalculationFactors>(() => {
     const stored = localStorage.getItem(FACTORS_STORAGE_KEY);
     return stored ? { ...defaultFactors, ...JSON.parse(stored) } : defaultFactors;
@@ -67,6 +78,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem(FACTORS_STORAGE_KEY, JSON.stringify(factors));
   }, [factors]);
+
+  const getSitePassword = (): string => {
+    return localStorage.getItem(SITE_PASSWORD_KEY) || DEFAULT_SITE_PASSWORD;
+  };
 
   const login = (password: string): boolean => {
     if (password === ADMIN_PASSWORD) {
@@ -80,6 +95,28 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     setIsAdmin(false);
   };
 
+  const siteLogin = (password: string): boolean => {
+    if (password === getSitePassword()) {
+      setIsSiteAuthenticated(true);
+      sessionStorage.setItem(SITE_AUTH_KEY, "true");
+      return true;
+    }
+    return false;
+  };
+
+  const siteLogout = () => {
+    setIsSiteAuthenticated(false);
+    sessionStorage.removeItem(SITE_AUTH_KEY);
+  };
+
+  const changeSitePassword = (currentPassword: string, newPassword: string): boolean => {
+    if (currentPassword === getSitePassword()) {
+      localStorage.setItem(SITE_PASSWORD_KEY, newPassword);
+      return true;
+    }
+    return false;
+  };
+
   const updateFactor = (key: keyof CalculationFactors, value: number) => {
     setFactors((prev) => ({ ...prev, [key]: value }));
   };
@@ -90,7 +127,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AdminContext.Provider value={{ isAdmin, login, logout, factors, updateFactor, resetFactors }}>
+    <AdminContext.Provider value={{ isAdmin, login, logout, factors, updateFactor, resetFactors, isSiteAuthenticated, siteLogin, siteLogout, changeSitePassword }}>
       {children}
     </AdminContext.Provider>
   );
