@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAdmin, defaultFactors, CalculationFactors } from "@/contexts/AdminContext";
-import { Lock, Unlock, RotateCcw, Save, LogOut } from "lucide-react";
+import { Lock, Unlock, RotateCcw, Save, LogOut, KeyRound } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface AdminPanelProps {
@@ -20,10 +20,16 @@ interface AdminPanelProps {
 }
 
 export function AdminPanel({ open, onOpenChange }: AdminPanelProps) {
-  const { isAdmin, login, logout, factors, updateFactor, resetFactors } = useAdmin();
+  const { isAdmin, login, logout, factors, updateFactor, resetFactors, changeSitePassword, siteLogout } = useAdmin();
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { toast } = useToast();
+
+  // Password change state
+  const [currentSitePass, setCurrentSitePass] = useState("");
+  const [newSitePass, setNewSitePass] = useState("");
+  const [confirmSitePass, setConfirmSitePass] = useState("");
+  const [passError, setPassError] = useState("");
 
   const handleLogin = () => {
     if (login(password)) {
@@ -53,6 +59,38 @@ export function AdminPanel({ open, onOpenChange }: AdminPanelProps) {
       title: "Valores repostos",
       description: "Todos os fatores voltaram aos valores originais.",
     });
+  };
+
+  const handleChangeSitePassword = () => {
+    setPassError("");
+    if (!currentSitePass || !newSitePass || !confirmSitePass) {
+      setPassError("Preencha todos os campos");
+      return;
+    }
+    if (newSitePass.length < 4) {
+      setPassError("A nova password deve ter pelo menos 4 caracteres");
+      return;
+    }
+    if (newSitePass !== confirmSitePass) {
+      setPassError("As passwords não coincidem");
+      return;
+    }
+    if (changeSitePassword(currentSitePass, newSitePass)) {
+      setCurrentSitePass("");
+      setNewSitePass("");
+      setConfirmSitePass("");
+      toast({
+        title: "Password alterada",
+        description: "A password de acesso ao simulador foi alterada com sucesso.",
+      });
+    } else {
+      setPassError("Password actual incorrecta");
+    }
+  };
+
+  const handleSiteLogout = () => {
+    siteLogout();
+    onOpenChange(false);
   };
 
   const renderFactorInput = (
@@ -93,7 +131,7 @@ export function AdminPanel({ open, onOpenChange }: AdminPanelProps) {
           </DialogTitle>
           <DialogDescription>
             {isAdmin
-              ? "Edite os fatores de cálculo utilizados nas simulações."
+              ? "Edite os fatores de cálculo e configurações do simulador."
               : "Introduza a password para aceder."}
           </DialogDescription>
         </DialogHeader>
@@ -119,10 +157,14 @@ export function AdminPanel({ open, onOpenChange }: AdminPanelProps) {
         ) : (
           <div className="space-y-4 py-4">
             <Tabs defaultValue="ita" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="ita">ITA</TabsTrigger>
                 <TabsTrigger value="ipp">IPP</TabsTrigger>
                 <TabsTrigger value="pensao">Pensão</TabsTrigger>
+                <TabsTrigger value="password" className="flex items-center gap-1">
+                  <KeyRound className="h-3.5 w-3.5" />
+                  Acesso
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="ita" className="space-y-2 mt-4">
@@ -160,7 +202,54 @@ export function AdminPanel({ open, onOpenChange }: AdminPanelProps) {
                 <div className="border-t pt-3 mt-3">
                   <h4 className="font-medium text-sm text-muted-foreground mb-3">Subsídios</h4>
                   {renderFactorInput("subsidioMorteMultiplicador", "Subsídio de Morte", "multiplier")}
-                  {renderFactorInput("subsidioFuneralMultiplicador", "Subsídio de Despesa de Funeral", "multiplier")}
+                  {renderFactorInput("subsidioFuneralMultiplicador", "Subsídio de Despesas de Funeral", "multiplier")}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="password" className="space-y-4 mt-4">
+                <h4 className="font-medium text-sm text-muted-foreground mb-3">
+                  Alterar Password de Acesso ao Simulador
+                </h4>
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <Label className="text-sm">Password actual</Label>
+                    <Input
+                      type="password"
+                      value={currentSitePass}
+                      onChange={(e) => { setCurrentSitePass(e.target.value); setPassError(""); }}
+                      placeholder="Password actual"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-sm">Nova password</Label>
+                    <Input
+                      type="password"
+                      value={newSitePass}
+                      onChange={(e) => { setNewSitePass(e.target.value); setPassError(""); }}
+                      placeholder="Nova password"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-sm">Confirmar nova password</Label>
+                    <Input
+                      type="password"
+                      value={confirmSitePass}
+                      onChange={(e) => { setConfirmSitePass(e.target.value); setPassError(""); }}
+                      placeholder="Confirmar nova password"
+                    />
+                  </div>
+                  {passError && <p className="text-sm text-destructive">{passError}</p>}
+                  <Button onClick={handleChangeSitePassword} className="w-full">
+                    <KeyRound className="h-4 w-4 mr-2" />
+                    Alterar Password
+                  </Button>
+                </div>
+
+                <div className="border-t pt-4 mt-4">
+                  <Button onClick={handleSiteLogout} variant="outline" className="w-full">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sair do Simulador
+                  </Button>
                 </div>
               </TabsContent>
             </Tabs>
@@ -172,7 +261,7 @@ export function AdminPanel({ open, onOpenChange }: AdminPanelProps) {
               </Button>
               <Button onClick={handleLogout} variant="destructive" className="flex-1">
                 <LogOut className="h-4 w-4 mr-2" />
-                Sair
+                Sair Admin
               </Button>
             </div>
           </div>

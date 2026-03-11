@@ -4,12 +4,19 @@ import { PensaoMorte } from "@/components/calculator/PensaoMorte";
 import { ITACalculator } from "@/components/calculator/ITACalculator";
 import { IPPCalculator } from "@/components/calculator/IPPCalculator";
 import { AdminPanel } from "@/components/admin/AdminPanel";
+import { SiteAccessGate } from "@/components/SiteAccessGate";
+import { useAdmin } from "@/contexts/AdminContext";
 import logoNossa from "@/assets/logo-nossa-seguros.png";
 import { Heart, Clock, Activity, Settings } from "lucide-react";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("pensao-morte");
   const [adminOpen, setAdminOpen] = useState(false);
+  const { isSiteAuthenticated } = useAdmin();
+
+  if (!isSiteAuthenticated) {
+    return <SiteAccessGate />;
+  }
 
   return (
     <div className="min-h-screen bg-background">
