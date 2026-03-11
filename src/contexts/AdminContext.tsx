@@ -108,6 +108,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     if (password === getSitePassword()) {
       setIsSiteAuthenticated(true);
       sessionStorage.setItem(SITE_AUTH_KEY, "true");
+      sessionStorage.setItem(SITE_AUTH_EXPIRY_KEY, String(Date.now() + SESSION_DURATION_MS));
       return true;
     }
     return false;
