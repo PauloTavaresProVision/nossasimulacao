@@ -84,6 +84,26 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     return stored ? { ...defaultFactors, ...JSON.parse(stored) } : defaultFactors;
   });
 
+  // Auto-expire session after 1 hour
+  useEffect(() => {
+    if (!isSiteAuthenticated) return;
+    const expiry = sessionStorage.getItem(SITE_AUTH_EXPIRY_KEY);
+    if (!expiry) return;
+    const remaining = Number(expiry) - Date.now();
+    if (remaining <= 0) {
+      setIsSiteAuthenticated(false);
+      sessionStorage.removeItem(SITE_AUTH_KEY);
+      sessionStorage.removeItem(SITE_AUTH_EXPIRY_KEY);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setIsSiteAuthenticated(false);
+      sessionStorage.removeItem(SITE_AUTH_KEY);
+      sessionStorage.removeItem(SITE_AUTH_EXPIRY_KEY);
+    }, remaining);
+    return () => clearTimeout(timer);
+  }, [isSiteAuthenticated]);
+
   useEffect(() => {
     localStorage.setItem(FACTORS_STORAGE_KEY, JSON.stringify(factors));
   }, [factors]);
