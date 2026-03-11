@@ -63,13 +63,22 @@ const ADMIN_PASSWORD = "Admin2026";
 const FACTORS_STORAGE_KEY = "nossa-seguros-factors";
 const SITE_PASSWORD_KEY = "nossa-seguros-site-password";
 const SITE_AUTH_KEY = "nossa-seguros-site-auth";
+const SITE_AUTH_EXPIRY_KEY = "nossa-seguros-site-auth-expiry";
 const DEFAULT_SITE_PASSWORD = "Nossa2026";
+const SESSION_DURATION_MS = 60 * 60 * 1000; // 1 hora
+
+function isSessionValid(): boolean {
+  const auth = sessionStorage.getItem(SITE_AUTH_KEY);
+  const expiry = sessionStorage.getItem(SITE_AUTH_EXPIRY_KEY);
+  if (auth === "true" && expiry) {
+    return Date.now() < Number(expiry);
+  }
+  return false;
+}
 
 export function AdminProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isSiteAuthenticated, setIsSiteAuthenticated] = useState(() => {
-    return sessionStorage.getItem(SITE_AUTH_KEY) === "true";
-  });
+  const [isSiteAuthenticated, setIsSiteAuthenticated] = useState(isSessionValid);
   const [factors, setFactors] = useState<CalculationFactors>(() => {
     const stored = localStorage.getItem(FACTORS_STORAGE_KEY);
     return stored ? { ...defaultFactors, ...JSON.parse(stored) } : defaultFactors;
