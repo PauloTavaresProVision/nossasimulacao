@@ -61,7 +61,7 @@ export function AdminPanel({ open, onOpenChange }: AdminPanelProps) {
     });
   };
 
-  const handleChangeSitePassword = () => {
+  const handleChangeSitePassword = async () => {
     setPassError("");
     if (!currentSitePass || !newSitePass || !confirmSitePass) {
       setPassError("Preencha todos os campos");
@@ -75,7 +75,8 @@ export function AdminPanel({ open, onOpenChange }: AdminPanelProps) {
       setPassError("As passwords não coincidem");
       return;
     }
-    if (changeSitePassword(currentSitePass, newSitePass)) {
+    const success = await changeSitePassword(currentSitePass, newSitePass);
+    if (success) {
       setCurrentSitePass("");
       setNewSitePass("");
       setConfirmSitePass("");

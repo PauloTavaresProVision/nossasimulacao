@@ -71,8 +71,8 @@ export function SiteAccessGate() {
                 <p className="text-sm text-destructive text-center">{error}</p>
               )}
             </div>
-            <Button type="submit" className="w-full" disabled={!password}>
-              Entrar
+            <Button type="submit" className="w-full" disabled={!password || loading}>
+              {loading ? "A verificar..." : "Entrar"}
             </Button>
           </form>
 
