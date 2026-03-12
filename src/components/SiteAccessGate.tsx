@@ -10,9 +10,14 @@ export function SiteAccessGate() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (siteLogin(password)) {
+    setLoading(true);
+    const success = await siteLogin(password);
+    setLoading(false);
+    if (success) {
       setError("");
     } else {
       setError("Password incorrecta");
