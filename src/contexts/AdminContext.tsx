@@ -128,7 +128,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const saveFactorsToDb = useCallback(async (newFactors: CalculationFactors) => {
     await supabase
       .from("app_settings")
-      .update({ factors: newFactors as unknown as Record<string, unknown>, updated_at: new Date().toISOString() })
+      .update({ factors: JSON.parse(JSON.stringify(newFactors)), updated_at: new Date().toISOString() })
       .eq("id", "main");
   }, []);
 
