@@ -1,28 +1,26 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CalculationFactors {
   // ITA
-  itaInternamento100: number; // primeiros X dias (100%)
-  itaInternamentoApos30: number; // após X dias (75%)
-  itaAmbulatorio: number; // 65%
-  itaLimiteDiasInternamento: number; // limite de dias para 100% (padrão 30)
-  itaDivisorRemuneracaoDiaria: number; // divisor para calcular diária (padrão 30)
-  
+  itaInternamento100: number;
+  itaInternamentoApos30: number;
+  itaAmbulatorio: number;
+  itaLimiteDiasInternamento: number;
+  itaDivisorRemuneracaoDiaria: number;
   // IPP
-  ippDecretoDefault: number; // 70%
-  ippMedicoDefault: number; // 50%
-  
+  ippDecretoDefault: number;
+  ippMedicoDefault: number;
   // Pensão por Morte
-  pensaoConjugeReforma: number; // 40%
-  pensaoConjugeNormal: number; // 30%
-  pensaoFilho1: number; // 20%
-  pensaoFilhos2: number; // 40%
-  pensaoFilhos3Mais: number; // 60%
-  pensaoPais: number; // 10% cada
-  
+  pensaoConjugeReforma: number;
+  pensaoConjugeNormal: number;
+  pensaoFilho1: number;
+  pensaoFilhos2: number;
+  pensaoFilhos3Mais: number;
+  pensaoPais: number;
   // Subsídios
-  subsidioMorteMultiplicador: number; // 6x
-  subsidioFuneralMultiplicador: number; // 2x
+  subsidioMorteMultiplicador: number;
+  subsidioFuneralMultiplicador: number;
 }
 
 const defaultFactors: CalculationFactors = {
@@ -52,19 +50,17 @@ interface AdminContextType {
   resetFactors: () => void;
   // Site access
   isSiteAuthenticated: boolean;
-  siteLogin: (password: string) => boolean;
+  siteLogin: (password: string) => Promise<boolean>;
   siteLogout: () => void;
-  changeSitePassword: (currentPassword: string, newPassword: string) => boolean;
+  changeSitePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
+  isLoading: boolean;
 }
 
 const AdminContext = createContext<AdminContextType | null>(null);
 
 const ADMIN_PASSWORD = "Admin2026";
-const FACTORS_STORAGE_KEY = "nossa-seguros-factors";
-const SITE_PASSWORD_KEY = "nossa-seguros-site-password";
 const SITE_AUTH_KEY = "nossa-seguros-site-auth";
 const SITE_AUTH_EXPIRY_KEY = "nossa-seguros-site-auth-expiry";
-const DEFAULT_SITE_PASSWORD = "Nossa2026";
 const SESSION_DURATION_MS = 60 * 60 * 1000; // 1 hora
 
 function isSessionValid(): boolean {
@@ -79,10 +75,34 @@ function isSessionValid(): boolean {
 export function AdminProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSiteAuthenticated, setIsSiteAuthenticated] = useState(isSessionValid);
-  const [factors, setFactors] = useState<CalculationFactors>(() => {
-    const stored = localStorage.getItem(FACTORS_STORAGE_KEY);
-    return stored ? { ...defaultFactors, ...JSON.parse(stored) } : defaultFactors;
-  });
+  const [factors, setFactors] = useState<CalculationFactors>(defaultFactors);
+  const [sitePassword, setSitePassword] = useState<string>("Nossa2026");
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load settings from Supabase on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("app_settings")
+          .select("site_password, factors")
+          .eq("id", "main")
+          .single();
+
+        if (!error && data) {
+          setSitePassword(data.site_password);
+          if (data.factors && typeof data.factors === "object" && !Array.isArray(data.factors)) {
+            setFactors({ ...defaultFactors, ...(data.factors as Partial<CalculationFactors>) });
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load settings:", e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadSettings();
+  }, []);
 
   // Auto-expire session after 1 hour
   useEffect(() => {
@@ -104,13 +124,13 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     return () => clearTimeout(timer);
   }, [isSiteAuthenticated]);
 
-  useEffect(() => {
-    localStorage.setItem(FACTORS_STORAGE_KEY, JSON.stringify(factors));
-  }, [factors]);
-
-  const getSitePassword = (): string => {
-    return localStorage.getItem(SITE_PASSWORD_KEY) || DEFAULT_SITE_PASSWORD;
-  };
+  // Save factors to Supabase when they change
+  const saveFactorsToDb = useCallback(async (newFactors: CalculationFactors) => {
+    await supabase
+      .from("app_settings")
+      .update({ factors: newFactors as unknown as Record<string, unknown>, updated_at: new Date().toISOString() })
+      .eq("id", "main");
+  }, []);
 
   const login = (password: string): boolean => {
     if (password === ADMIN_PASSWORD) {
@@ -120,12 +140,19 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     return false;
   };
 
-  const logout = () => {
-    setIsAdmin(false);
-  };
+  const logout = () => setIsAdmin(false);
 
-  const siteLogin = (password: string): boolean => {
-    if (password === getSitePassword()) {
+  const siteLogin = async (password: string): Promise<boolean> => {
+    // Re-fetch from DB to get latest password
+    const { data } = await supabase
+      .from("app_settings")
+      .select("site_password")
+      .eq("id", "main")
+      .single();
+
+    const currentPassword = data?.site_password || sitePassword;
+
+    if (password === currentPassword) {
       setIsSiteAuthenticated(true);
       sessionStorage.setItem(SITE_AUTH_KEY, "true");
       sessionStorage.setItem(SITE_AUTH_EXPIRY_KEY, String(Date.now() + SESSION_DURATION_MS));
@@ -137,27 +164,48 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const siteLogout = () => {
     setIsSiteAuthenticated(false);
     sessionStorage.removeItem(SITE_AUTH_KEY);
+    sessionStorage.removeItem(SITE_AUTH_EXPIRY_KEY);
   };
 
-  const changeSitePassword = (currentPassword: string, newPassword: string): boolean => {
-    if (currentPassword === getSitePassword()) {
-      localStorage.setItem(SITE_PASSWORD_KEY, newPassword);
-      return true;
+  const changeSitePassword = async (currentPassword: string, newPassword: string): Promise<boolean> => {
+    // Re-fetch current password from DB
+    const { data } = await supabase
+      .from("app_settings")
+      .select("site_password")
+      .eq("id", "main")
+      .single();
+
+    const dbPassword = data?.site_password || sitePassword;
+
+    if (currentPassword === dbPassword) {
+      const { error } = await supabase
+        .from("app_settings")
+        .update({ site_password: newPassword, updated_at: new Date().toISOString() })
+        .eq("id", "main");
+
+      if (!error) {
+        setSitePassword(newPassword);
+        return true;
+      }
     }
     return false;
   };
 
   const updateFactor = (key: keyof CalculationFactors, value: number) => {
-    setFactors((prev) => ({ ...prev, [key]: value }));
+    setFactors((prev) => {
+      const updated = { ...prev, [key]: value };
+      saveFactorsToDb(updated);
+      return updated;
+    });
   };
 
   const resetFactors = () => {
     setFactors(defaultFactors);
-    localStorage.removeItem(FACTORS_STORAGE_KEY);
+    saveFactorsToDb(defaultFactors);
   };
 
   return (
-    <AdminContext.Provider value={{ isAdmin, login, logout, factors, updateFactor, resetFactors, isSiteAuthenticated, siteLogin, siteLogout, changeSitePassword }}>
+    <AdminContext.Provider value={{ isAdmin, login, logout, factors, updateFactor, resetFactors, isSiteAuthenticated, siteLogin, siteLogout, changeSitePassword, isLoading }}>
       {children}
     </AdminContext.Provider>
   );
