@@ -2,7 +2,12 @@ version: "3.8"
 
 services:
   nossa-seguros:
-    build: .
+    build:
+      context: .
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-https://dseciraaksejvuofxnge.supabase.co}
+        VITE_SUPABASE_PUBLISHABLE_KEY: ${VITE_SUPABASE_PUBLISHABLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzZWNpcmFha3NlanZ1b2Z4bmdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMDU4NTcsImV4cCI6MjA4ODg4MTg1N30.NKtPyfZTXpbvSAkDKjNuyd6xhQiOEr3l0F5XCCw1djA}
+        VITE_SUPABASE_PROJECT_ID: ${VITE_SUPABASE_PROJECT_ID:-dseciraaksejvuofxnge}
     container_name: nossa-seguros
     ports:
       - "7489:80"
